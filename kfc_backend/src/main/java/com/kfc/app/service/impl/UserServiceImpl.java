@@ -1,6 +1,5 @@
 package com.kfc.app.service.impl;
 
-import com.kfc.app.controller.UserController;
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.User;
 import com.kfc.app.exception.DuplicatedUserException;
@@ -17,9 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto save(UserDto userDto) {
         User user = MapperUtil.map(userDto, User.class);
-        if(userRepository.findUserByUsername(user.getUsername()).isPresent()){
+        if(userRepository.findByUsername(user.getUsername()).isPresent()){
             throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
         }
         user.setCreatedAt(LocalDate.now());
@@ -44,11 +41,19 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserDto update(Integer id, UserDto userDto){
-        Optional<User> existingEntity = userRepository.findById(id);
-        if(existingEntity.isEmpty()){
+        Optional<User> currentUser = userRepository.findById(id);
+        if(currentUser.isEmpty()){
             throw new NotFoundException("User does not exists: " + userDto);
         }
-        User user = existingEntity.get();
+        
+        // if username has been changed, validate if the new username already exists
+        if(userDto.getUsername() != null && !currentUser.get().getUsername().equals(userDto.getUsername())){
+            Optional<User> existingUsername = userRepository.findByUsername(userDto.getUsername());
+            if(existingUsername.isPresent()){
+                throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
+            }
+        }
+        User user = currentUser.get();
         user.setPassword(userDto.getPassword());
         user.setUpdatedAt(LocalDate.now());
         userRepository.save(user);
@@ -69,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean existUsername(String username) {
         Optional<User> user = userRepository.
-                findUserByUsername(username);
+                findByUsername(username);
         return user.isPresent();
     }
 

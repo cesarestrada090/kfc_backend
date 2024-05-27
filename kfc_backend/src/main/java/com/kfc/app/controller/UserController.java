@@ -44,9 +44,9 @@ public class UserController extends AbstractController {
     }
 
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpStatus> update(@PathVariable(value = "id") int id, @Valid @RequestBody UserDto userDto){
-        userService.update(id, userDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<UserDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody UserDto userDto){
+        userDto = userService.update(id, userDto);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @GetMapping()
