@@ -2,6 +2,7 @@ package com.kfc.app.service.impl;
 
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.User;
+import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
 import com.kfc.app.dto.UserDto;
@@ -38,27 +39,33 @@ public class UserServiceImpl implements UserService {
             userRepository.save(existingEntity);
             return MapperUtil.map(existingEntity, userDto.getClass());
         }
-        throw new IllegalArgumentException();
+        throw new NotFoundException("User does not exists: "+ userDto);
     }
 
     @Override
     public UserDto getUserByUserAndPassword(UserDto userDto) {
         Optional<User> usuarioOptional = userRepository.
                 findUserByUsernameAndPassword(userDto.getUsername(), userDto.getPassword());
-        if(usuarioOptional.isPresent()) {
-            return MapperUtil.map(usuarioOptional.get(), UserDto.class);
+        if(usuarioOptional.isEmpty()) {
+            throw new IllegalArgumentException();
         }
-        throw new IllegalArgumentException();
+        return MapperUtil.map(usuarioOptional.get(), UserDto.class);
     }
 
     @Override
     public UserDto getUserById(Integer id){
-        User user = userRepository.getReferenceById(id);
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()){
+            throw new NotFoundException("User Id does not exists: " + id);
+        }
         return MapperUtil.map(user, UserDto.class);
     }
     @Override
     public ResultPageWrapper<UserDto> getAll(Pageable paging){
-        Page<User> areaPage = userRepository.findAll(paging);
-        return PaginationUtil.prepareResultWrapper(areaPage, UserDto.class);
+        Page<User> users = userRepository.findAll(paging);
+        if(users.isEmpty()){
+            throw  new NotFoundException("Users does not exists");
+        }
+        return PaginationUtil.prepareResultWrapper(users, UserDto.class);
     }
 }

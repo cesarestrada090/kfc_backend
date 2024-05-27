@@ -16,12 +16,12 @@ public class LoggingAspect {
     }
     @Before("logAllControllers()")
     public void logAllControllersBefore(JoinPoint jp){
-        System.out.println("Iniciando Request: " + jp.getSignature());
+        System.out.println("Init Request: " + jp.getSignature());
     }
 
     @After("logAllControllers()")
     public void logAllControllersAfter(JoinPoint jp)
     {
-        System.out.println("Terminando Request: " + jp.getSignature());
+        System.out.println("Ending Request: " + jp.getSignature());
     }
 }
