@@ -1,5 +1,6 @@
 package com.kfc.app.service.impl;
 
+import com.kfc.app.dto.PersonDto;
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.Person;
 import com.kfc.app.entities.User;
@@ -7,6 +8,7 @@ import com.kfc.app.exception.DuplicatedUserException;
 import com.kfc.app.exception.InvalidPasswordException;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.PersonRepository;
+import com.kfc.app.service.PersonService;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
 import com.kfc.app.dto.UserDto;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,19 +38,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto save(UserDto userDto) {
-        User user = MapperUtil.map(userDto, User.class);
-        if (userRepository.findByUsername(user.getUsername()).isPresent()){
+        PersonDto personDto = userDto.getPerson();
+        if (this.usernameAlreadyExists(userDto.getUsername())){
             throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
         }
-        Optional<Person> personOpt = personRepository.findById(userDto.getPersonId());
-        if (personOpt.isEmpty()){
-            throw new NotFoundException("Person does not exists " + userDto.getPersonId());
+        if(personRepository.findByDocumentNumber(personDto.getDocumentNumber()).isPresent()){
+            throw new DuplicatedUserException("Document number duplicated for " + personDto.getDocumentNumber());
         }
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-        user.setPerson(personOpt.get());
-        user = userRepository.save(user);
-        return MapperUtil.map(user, UserDto.class);
+        Person personEntity = MapperUtil.map(personDto, Person.class);;
+        User userEntity = MapperUtil.map(userDto, User.class);
+        userEntity.setCreatedAt(LocalDateTime.now());
+        userEntity.setUpdatedAt(LocalDateTime.now());
+        userEntity.setPerson(personEntity);
+        userEntity = userRepository.save(userEntity);
+        return MapperUtil.map(userEntity, UserDto.class);
     }
     @Override
     public UserDto update(Integer id, UserDto userDto){
