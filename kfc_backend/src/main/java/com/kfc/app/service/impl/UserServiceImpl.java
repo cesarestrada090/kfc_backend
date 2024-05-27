@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
         if(existingEntity.isEmpty()){
             throw new NotFoundException("User does not exists: " + userDto);
         }
-        User user = userRepository.findById(id).get();
+        User user = existingEntity.get();
         user.setPassword(userDto.getPassword());
         userRepository.save(user);
         return MapperUtil.map(user, userDto.getClass());
