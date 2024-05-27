@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public UserDto update(Integer id, UserDto userDto){
         Optional<User> existingEntity = userRepository.findById(id);
         if(existingEntity.isEmpty()){
-            throw new NotFoundException("User does not exists: "+ userDto);
+            throw new NotFoundException("User does not exists: " + userDto);
         }
         User user = userRepository.findById(id).get();
         user.setPassword(userDto.getPassword());
