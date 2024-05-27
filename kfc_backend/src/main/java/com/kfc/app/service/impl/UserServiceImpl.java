@@ -33,13 +33,15 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserDto update(Integer id, UserDto userDto){
-        if(userRepository.findById(id).isPresent()){
-            User existingEntity = userRepository.findById(id).get();
-            existingEntity.setPassword(userDto.getPassword());
-            userRepository.save(existingEntity);
-            return MapperUtil.map(existingEntity, userDto.getClass());
+        Optional<User> existingEntity = userRepository.findById(id);
+        if(existingEntity.isEmpty()){
+            throw new NotFoundException("User does not exists: "+ userDto);
         }
-        throw new NotFoundException("User does not exists: "+ userDto);
+        User user = userRepository.findById(id).get();
+        user.setPassword(userDto.getPassword());
+        userRepository.save(user);
+        return MapperUtil.map(user, userDto.getClass());
+        
     }
 
     @Override
