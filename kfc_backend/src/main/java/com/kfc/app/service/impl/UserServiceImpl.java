@@ -1,10 +1,12 @@
 package com.kfc.app.service.impl;
 
 import com.kfc.app.dto.ResultPageWrapper;
+import com.kfc.app.entities.Person;
 import com.kfc.app.entities.User;
 import com.kfc.app.exception.DuplicatedUserException;
 import com.kfc.app.exception.InvalidPasswordException;
 import com.kfc.app.exception.NotFoundException;
+import com.kfc.app.repository.PersonRepository;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
 import com.kfc.app.dto.UserDto;
@@ -23,20 +25,27 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PersonRepository personRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PersonRepository personRepository) {
         this.userRepository = userRepository;
+        this.personRepository = personRepository;
     }
 
     @Override
     public UserDto save(UserDto userDto) {
         User user = MapperUtil.map(userDto, User.class);
-        if(userRepository.findByUsername(user.getUsername()).isPresent()){
+        if (userRepository.findByUsername(user.getUsername()).isPresent()){
             throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
+        }
+        Optional<Person> personOpt = personRepository.findById(userDto.getPersonId());
+        if (personOpt.isEmpty()){
+            throw new NotFoundException("Person does not exists " + userDto.getPersonId());
         }
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
+        user.setPerson(personOpt.get());
         user = userRepository.save(user);
         return MapperUtil.map(user, UserDto.class);
     }

@@ -19,15 +19,17 @@ public class UserDto implements Serializable {
     private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Integer personId;
     public UserDto() {
     }
 
-    public UserDto(Integer id, String username, String password, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserDto(Integer id, String username, String password, LocalDateTime createdAt, LocalDateTime updatedAt, Integer personId) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.personId = personId;
     }
 
     public Integer getId() {
@@ -88,5 +90,13 @@ public class UserDto implements Serializable {
     }
     public boolean hasDifferentUserName(String username){
         return this.getUsername()!= null && !this.getUsername().equals(username);
+    }
+
+    public Integer getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(Integer personId) {
+        this.personId = personId;
     }
 }

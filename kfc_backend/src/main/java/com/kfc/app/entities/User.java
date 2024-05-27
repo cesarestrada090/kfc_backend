@@ -28,6 +28,10 @@ public class User {
     
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name =  "person_id")
+    private Person person;
     
 
     public Integer getId() {
@@ -68,5 +72,13 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
     }
 }
