@@ -44,12 +44,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByUserAndPassword(UserDto userDto) {
-        Optional<User> usuarioOptional = userRepository.
+        Optional<User> user = userRepository.
                 findUserByUsernameAndPassword(userDto.getUsername(), userDto.getPassword());
-        if(usuarioOptional.isEmpty()) {
+        if(user.isEmpty()) {
             throw new NotFoundException("Incorrect password for user: " + userDto);
         }
-        return MapperUtil.map(usuarioOptional.get(), UserDto.class);
+        return MapperUtil.map(user.get(), UserDto.class);
     }
 
     @Override
