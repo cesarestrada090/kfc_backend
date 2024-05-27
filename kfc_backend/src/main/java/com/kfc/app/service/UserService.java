@@ -11,7 +11,7 @@ public interface UserService {
 
     UserDto getByUsernameAndPassword(UserDto userDto);
 
-    Boolean existUsername(String username);
+    Boolean usernameAlreadyExists(String username);
     UserDto getById(Integer id);
     ResultPageWrapper<UserDto> getAll(Pageable paging);
 }

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -34,8 +35,8 @@ public class UserServiceImpl implements UserService {
         if(userRepository.findByUsername(user.getUsername()).isPresent()){
             throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
         }
-        user.setCreatedAt(LocalDate.now());
-        user.setUpdatedAt(LocalDate.now());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
         user = userRepository.save(user);
         return MapperUtil.map(user, UserDto.class);
     }
@@ -45,20 +46,21 @@ public class UserServiceImpl implements UserService {
         if(currentUser.isEmpty()){
             throw new NotFoundException("User does not exists: " + userDto);
         }
-        
-        // if username has been changed, validate if the new username already exists
-        if(userDto.getUsername() != null && !currentUser.get().getUsername().equals(userDto.getUsername())){
-            Optional<User> existingUsername = userRepository.findByUsername(userDto.getUsername());
-            if(existingUsername.isPresent()){
-                throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
-            }
-        }
         User user = currentUser.get();
+        
+        // if you include username different from actual, 
+        // we need to validate that the new one should not exist
+        if(userDto.hasDifferentUserName(currentUser.get().getUsername()) ){
+            if(usernameAlreadyExists(userDto.getUsername())){
+                throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());    
+            }
+            user.setUsername(userDto.getUsername());
+        }
+        
         user.setPassword(userDto.getPassword());
-        user.setUpdatedAt(LocalDate.now());
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
         return MapperUtil.map(user, userDto.getClass());
-        
     }
 
     @Override
@@ -72,7 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean existUsername(String username) {
+    public Boolean usernameAlreadyExists(String username) {
         Optional<User> user = userRepository.
                 findByUsername(username);
         return user.isPresent();

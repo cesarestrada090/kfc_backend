@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -17,12 +17,12 @@ public class UserDto implements Serializable {
     private String username;
     @Size(max = 45)
     private String password;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     public UserDto() {
     }
 
-    public UserDto(Integer id, String username, String password, LocalDate createdAt, LocalDate updatedAt) {
+    public UserDto(Integer id, String username, String password, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -71,19 +71,22 @@ public class UserDto implements Serializable {
         this.password = password;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDate getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDate updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    public boolean hasDifferentUserName(String username){
+        return this.getUsername()!= null && !this.getUsername().equals(username);
     }
 }
