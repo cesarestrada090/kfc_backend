@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> usuarioOptional = userRepository.
                 findUserByUsernameAndPassword(userDto.getUsername(), userDto.getPassword());
         if(usuarioOptional.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new NotFoundException("Incorrect password for user: " + userDto);
         }
         return MapperUtil.map(usuarioOptional.get(), UserDto.class);
     }
