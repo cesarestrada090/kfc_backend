@@ -4,7 +4,6 @@ import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.dto.UserDto;
 import com.kfc.app.service.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+@RequestMapping("v1/app/user")
 @RestController
-@RequestMapping("/app")
-public class UserController {
+public class UserController extends AbstractController {
     private final UserService userService;
     private static final Logger log = Logger.getLogger(UserController.class.getName());
     @Autowired
@@ -27,60 +25,41 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(value="user/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
+    @PostMapping(value="/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
     public ResponseEntity<UserDto> authenticate(@Valid @RequestBody UserDto userDto){
-        try {
-            log.info("Request: " + userDto);
-            userDto = userService.getUserByUserAndPassword(userDto);
-        } catch (Exception e){
-            return new ResponseEntity<>(userDto, HttpStatus.NOT_FOUND);
-        }
+        log.info("Login request: " + userDto);
+        userDto = userService.getByUsernameAndPassword(userDto);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value="user/{id}", method = RequestMethod.GET, consumes = {"*/*"}, produces = "application/json")
+    @GetMapping(value="/{id}", produces = "application/json")
     public ResponseEntity<UserDto> getUserById(@PathVariable(value = "id") Integer id){
-        UserDto userDto = userService.getUserById(id);
+        UserDto userDto = userService.getById(id);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
-    @RequestMapping(value="user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
     public ResponseEntity<UserDto> save(@Valid @RequestBody UserDto userDto){
-        try {
-            log.info("Request: " + userDto);
-            userDto = userService.save(userDto);
-        } catch (Exception e){
-            return new ResponseEntity<>(userDto, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        userDto = userService.save(userDto);
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
-    @PutMapping(value="user/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpStatus> update(@PathVariable(value = "id") int id, @Valid @RequestBody UserDto userDto){
-        try {
-            userService.update(id, userDto);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        userService.update(id, userDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value="user")
+    @GetMapping()
     public ResponseEntity<Map<String,Object>> getAll(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size){
-        Map<String, Object> response = new HashMap<>();
-        try {
-            Pageable paging = PageRequest.of(page-1, size);
-            ResultPageWrapper<UserDto> resultPageWrapper = userService.getAll(paging);
-            response.put("users", resultPageWrapper.getPagesResult());
-            response.put("currentPage", resultPageWrapper.getCurrentPage());
-            response.put("totalItems", resultPageWrapper.getTotalItems());
-            response.put("totalPages", resultPageWrapper.getTotalPages());
-        } catch (Exception e){
-            log.info("Excepcion en: "+e.getMessage());
-return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Pageable paging = PageRequest.of(page-1, size);
+        ResultPageWrapper<UserDto> resultPageWrapper = userService.getAll(paging);
+        Map<String, Object> response = prepareResponse(resultPageWrapper);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @Override
+    protected String getResource() {
+        return "users";
     }
 }

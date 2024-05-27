@@ -3,6 +3,9 @@ package com.kfc.app.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Entity
 @Table(name = "user")
 public class User {
@@ -18,6 +21,13 @@ public class User {
     @Size(max = 45)
     @Column(name = "password", length = 45)
     private String password;
+    
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+    
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
+    
 
     public Integer getId() {
         return id;
@@ -41,5 +51,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

@@ -9,7 +9,9 @@ public interface UserService {
     UserDto save(UserDto userDto);
     UserDto update(Integer id, UserDto dto);
 
-    UserDto getUserByUserAndPassword(UserDto userDto);
-    UserDto getUserById(Integer id);
+    UserDto getByUsernameAndPassword(UserDto userDto);
+
+    Boolean existUsername(String username);
+    UserDto getById(Integer id);
     ResultPageWrapper<UserDto> getAll(Pageable paging);
 }

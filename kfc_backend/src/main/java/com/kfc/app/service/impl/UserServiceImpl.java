@@ -1,7 +1,10 @@
 package com.kfc.app.service.impl;
 
+import com.kfc.app.controller.UserController;
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.User;
+import com.kfc.app.exception.DuplicatedUserException;
+import com.kfc.app.exception.InvalidPasswordException;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
@@ -13,7 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,7 +34,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto save(UserDto userDto) {
         User user = MapperUtil.map(userDto, User.class);
-        userRepository.save(user);
+        if(userRepository.findUserByUsername(user.getUsername()).isPresent()){
+            throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
+        }
+        user.setCreatedAt(LocalDate.now());
+        user.setUpdatedAt(LocalDate.now());
+        user = userRepository.save(user);
         return MapperUtil.map(user, UserDto.class);
     }
     @Override
@@ -39,28 +50,36 @@ public class UserServiceImpl implements UserService {
         }
         User user = existingEntity.get();
         user.setPassword(userDto.getPassword());
+        user.setUpdatedAt(LocalDate.now());
         userRepository.save(user);
         return MapperUtil.map(user, userDto.getClass());
         
     }
 
     @Override
-    public UserDto getUserByUserAndPassword(UserDto userDto) {
+    public UserDto getByUsernameAndPassword(UserDto userDto) {
         Optional<User> user = userRepository.
                 findUserByUsernameAndPassword(userDto.getUsername(), userDto.getPassword());
         if(user.isEmpty()) {
-            throw new NotFoundException("Incorrect password for user: " + userDto);
+            throw new InvalidPasswordException("Username: " + userDto.getUsername());
         }
         return MapperUtil.map(user.get(), UserDto.class);
     }
 
     @Override
-    public UserDto getUserById(Integer id){
+    public Boolean existUsername(String username) {
+        Optional<User> user = userRepository.
+                findUserByUsername(username);
+        return user.isPresent();
+    }
+
+    @Override
+    public UserDto getById(Integer id){
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()){
             throw new NotFoundException("User Id does not exists: " + id);
         }
-        return MapperUtil.map(user, UserDto.class);
+        return MapperUtil.map(user.get(), UserDto.class);
     }
     @Override
     public ResultPageWrapper<UserDto> getAll(Pageable paging){

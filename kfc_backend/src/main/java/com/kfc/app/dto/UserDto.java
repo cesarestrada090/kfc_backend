@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -16,14 +17,17 @@ public class UserDto implements Serializable {
     private String username;
     @Size(max = 45)
     private String password;
-    
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
     public UserDto() {
     }
 
-    public UserDto(Integer id, String username, String password) {
+    public UserDto(Integer id, String username, String password, LocalDate createdAt, LocalDate updatedAt) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -37,28 +41,22 @@ public class UserDto implements Serializable {
     public String getPassword() {
         return password;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserDto entity = (UserDto) o;
-        return Objects.equals(this.id, entity.id) &&
-                Objects.equals(this.username, entity.username) &&
-                Objects.equals(this.password, entity.password);
-    }
+    
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "nombre = " + username + ", " +
-                "pass = " + password + ")";
+        return "UserDto{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 
     public void setId(Integer id) {
@@ -72,5 +70,20 @@ public class UserDto implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
