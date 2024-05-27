@@ -6,6 +6,7 @@
 # Node artifact files
 node_modules/
 dist/
+../.DS_Store
 
 # Compiled Java class files
 *.class
