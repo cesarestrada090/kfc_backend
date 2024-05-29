@@ -4,7 +4,7 @@ import com.kfc.app.dto.PersonDto;
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.Person;
 import com.kfc.app.entities.User;
-import com.kfc.app.exception.DuplicatedUserException;
+import com.kfc.app.exception.DuplicatedException;
 import com.kfc.app.exception.InvalidPasswordException;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.PersonRepository;
@@ -37,10 +37,10 @@ public class UserServiceImpl implements UserService {
     public UserDto save(UserDto userDto) {
         PersonDto personDto = userDto.getPerson();
         if (this.usernameAlreadyExists(userDto.getUsername())){
-            throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
+            throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
         }
         if(personRepository.findByDocumentNumber(personDto.getDocumentNumber()).isPresent()){
-            throw new DuplicatedUserException("Document number duplicated for " + personDto.getDocumentNumber());
+            throw new DuplicatedException("Document number duplicated for " + personDto.getDocumentNumber());
         }
         Person personEntity = MapperUtil.map(personDto, Person.class);;
         User userEntity = MapperUtil.map(userDto, User.class);
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
         // we need to validate that the new one should not exist
         if(userDto.hasDifferentUserName(userEntity.getUsername()) ){
             if(usernameAlreadyExists(userDto.getUsername())){
-                throw new DuplicatedUserException("Username duplicated for " + userDto.getUsername());
+                throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
             }
             userEntity.setUsername(userDto.getUsername());
         }
@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     private void preparePersonEntity(PersonDto personDto, Person personEntity) {
         if(personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber()) ){
             if(personRepository.findByDocumentNumber(personDto.getDocumentNumber()).isPresent()){
-                throw new DuplicatedUserException("Document Number duplicated for " + personDto.getDocumentNumber());
+                throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
             }
             personEntity.setDocumentNumber(personDto.getDocumentNumber());
         }

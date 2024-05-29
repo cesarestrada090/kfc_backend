@@ -33,7 +33,7 @@ public class ControllerAdvice {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DuplicatedUserException.class)
+    @ExceptionHandler(DuplicatedException.class)
     public ResponseEntity<Map<String, String>> duplicatedExceptions(Exception ex) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("Duplicated User", ex.getMessage());

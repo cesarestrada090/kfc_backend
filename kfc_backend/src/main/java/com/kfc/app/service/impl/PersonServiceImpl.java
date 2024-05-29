@@ -3,7 +3,7 @@ package com.kfc.app.service.impl;
 import com.kfc.app.dto.PersonDto;
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.Person;
-import com.kfc.app.exception.DuplicatedUserException;
+import com.kfc.app.exception.DuplicatedException;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.PersonRepository;
 import com.kfc.app.service.PersonService;
@@ -29,7 +29,7 @@ public class PersonServiceImpl implements PersonService {
     public PersonDto save(PersonDto personDto) {
         Person person = MapperUtil.map(personDto, Person.class);
         if(personRepository.findByDocumentNumber(person.getDocumentNumber()).isPresent()){
-            throw new DuplicatedUserException("Document number duplicated for " + personDto.getDocumentNumber());
+            throw new DuplicatedException("Document number duplicated for " + personDto.getDocumentNumber());
         }
         person = personRepository.save(person);
         return MapperUtil.map(person, PersonDto.class);
@@ -45,7 +45,7 @@ public class PersonServiceImpl implements PersonService {
         // we need to validate that the new one should not exist
         if(personDto.hasDifferentDocumentNumber(currentPerson.get().getDocumentNumber()) ){
             if(findByDocumentNumber(personDto.getDocumentNumber()) != null){
-                throw new DuplicatedUserException("Document Number duplicated for " + personDto.getDocumentNumber());
+                throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
             }
             personEntity.setDocumentNumber(personDto.getDocumentNumber());
         }
