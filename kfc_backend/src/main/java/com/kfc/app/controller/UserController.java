@@ -33,7 +33,7 @@ public class UserController extends AbstractController {
     }
 
     @GetMapping(value="/{id}", produces = "application/json")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(value = "id") Integer id){
+    public ResponseEntity<UserDto> getById(@PathVariable(value = "id") Integer id){
         UserDto userDto = userService.getById(id);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }

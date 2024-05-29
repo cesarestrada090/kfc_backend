@@ -27,7 +27,7 @@ public class PersonController extends AbstractController {
     }
     
     @GetMapping(value="/{id}", produces = "application/json")
-    public ResponseEntity<PersonDto> getUserById(@PathVariable(value = "id") Integer id){
+    public ResponseEntity<PersonDto> getById(@PathVariable(value = "id") Integer id){
         PersonDto personDto = personService.getById(id);
         return new ResponseEntity<>(personDto, HttpStatus.OK);
     }
