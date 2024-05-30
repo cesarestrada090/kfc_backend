@@ -1,13 +1,9 @@
 package com.kfc.app.entities;
 
+import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -39,6 +35,10 @@ public class Warehouse {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToOne()
+    @JoinColumn(name =  "user_id")
+    private User user;
 
     public Integer getId() {
         return id;
