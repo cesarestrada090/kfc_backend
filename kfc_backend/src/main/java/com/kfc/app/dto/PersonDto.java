@@ -1,5 +1,6 @@
 package com.kfc.app.dto;
 
+import com.kfc.app.entities.Person;
 import com.kfc.app.entities.User;
 import jakarta.validation.constraints.Size;
 
@@ -20,6 +21,13 @@ public class PersonDto implements Serializable {
     private String phoneNumber;
     private String email;
     public PersonDto() {
+    }
+    public PersonDto(Person person) {
+        this.firstName = person.getFirstName();
+        this.lastName = person.getLastName();
+        this.email = person.getLastName();
+        this.documentNumber = person.getDocumentNumber();
+        this.phoneNumber = person.getPhoneNumber();
     }
 
     public Integer getId() {

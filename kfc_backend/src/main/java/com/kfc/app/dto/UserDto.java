@@ -22,6 +22,12 @@ public class UserDto implements Serializable {
     private PersonDto person;
     public UserDto() {
     }
+
+    public UserDto(User user) {
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.person = new PersonDto(user.getPerson());
+    }
     
 
     public Integer getId() {

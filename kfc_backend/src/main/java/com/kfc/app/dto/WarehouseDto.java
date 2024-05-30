@@ -12,6 +12,7 @@ public class WarehouseDto {
     private boolean status; 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UserDto userDto;
 
     public WarehouseDto(Warehouse warehouse) {
         this.id = warehouse.getId();
@@ -20,6 +21,7 @@ public class WarehouseDto {
         this.city = warehouse.getCity();
         this.status = warehouse.isStatus();
         this.updatedAt = LocalDateTime.now();
+        this.userDto = new UserDto(warehouse.getUser());
     }
 
     public Integer getId() {

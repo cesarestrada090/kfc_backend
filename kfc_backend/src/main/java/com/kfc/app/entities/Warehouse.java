@@ -95,4 +95,12 @@ public class Warehouse {
     public void setCity(String city) {
         this.city = city;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
