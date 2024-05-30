@@ -33,3 +33,33 @@ CREATE TABLE user (
   FOREIGN KEY (organization_id) REFERENCES organization(id)
 );
 
+CREATE TABLE warehouse (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
+  phone_number VARCHAR(255) NOT NULL,
+  status boo
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE warehouse (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
+  status BOOLEAN NOT NULL DEFAULT true,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by INT,
+  FOREIGN KEY (created_by) REFERENCES user(id),
+);
+
+CREATE TABLE user_warehouse (
+  user_id INT NOT NULL,
+  warehouse_id INT NOT NULL,
+  PRIMARY KEY (user_id, warehouse_id),  -- Composite primary key
+  FOREIGN KEY (user_id) REFERENCES user(id),
+  FOREIGN KEY (warehouse_id) REFERENCES warehouse(id)
+);
