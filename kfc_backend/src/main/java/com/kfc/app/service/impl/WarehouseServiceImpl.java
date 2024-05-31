@@ -1,5 +1,4 @@
 package com.kfc.app.service.impl;
-
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.dto.UserDto;
 import com.kfc.app.dto.WarehouseDto;
@@ -49,11 +48,9 @@ public class WarehouseServiceImpl implements WarehouseService {
         if (optionalWarehouse.isEmpty()) {
             throw new NotFoundException("Warehouse not found with id: " + id);
         }
-        Warehouse warehouse = optionalWarehouse.get();
-        warehouse.setName(dto.getName());
-        warehouse.setAddress(dto.getAddress());
-        warehouse.setCity(dto.getCity());
-        warehouse.setStatus(dto.isStatus());
+        Person person = personService.getOrCreatePersonEntity(dto.getUserDto().getPerson());
+        User user = userService.getOrCreateUserEntityByDto(dto.getUserDto(), person);
+        Warehouse warehouse = createWarehouseEntityByDto(dto, user);
         warehouseRepository.save(warehouse);
         return MapperUtil.map(optionalWarehouse.get(), WarehouseDto.class);
     }
@@ -79,6 +76,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private Warehouse createWarehouseEntityByDto(WarehouseDto warehouseDto, User user){
         Warehouse warehouse = new Warehouse();
+        warehouse.setId(warehouseDto.getId());
         warehouse.setName(warehouseDto.getName());
         warehouse.setAddress(warehouseDto.getAddress());
         warehouse.setCity(warehouseDto.getCity());
