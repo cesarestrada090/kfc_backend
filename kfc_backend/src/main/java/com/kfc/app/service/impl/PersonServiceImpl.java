@@ -72,6 +72,17 @@ public class PersonServiceImpl implements PersonService {
         }
         return MapperUtil.map(person.get(), PersonDto.class);
     }
+
+    @Override
+    public Person getPersonEntity(PersonDto personDto) {
+        Optional<Person> optPerson = personRepository.findById(personDto.getId());
+        if(optPerson.isPresent()){
+            return optPerson.get();
+        } else {
+            throw new NotFoundException("Person not found with id: " + personDto.getId());
+        }
+    }
+
     @Override
     public ResultPageWrapper<PersonDto> getAll(Pageable paging){
         Page<Person> personList = personRepository.findAll(paging);
@@ -79,5 +90,26 @@ public class PersonServiceImpl implements PersonService {
             throw  new NotFoundException("Person does not exists");
         }
         return PaginationUtil.prepareResultWrapper(personList, PersonDto.class);
+    }
+
+    public Person getOrCreatePersonEntity(PersonDto personDto){
+        Person person = null;
+        // If person does not have id, we should create new Person
+        if (personDto.getId() == null) {
+            // Check if the new Person is using duplicated document number
+            if(this.findByDocumentNumber(personDto.getDocumentNumber()) != null){
+                throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
+            }
+            // Create Person Entity
+            person = new Person();
+            person.setFirstName(personDto.getFirstName());
+            person.setLastName(personDto.getLastName());
+            person.setDocumentNumber(personDto.getDocumentNumber());
+            person.setPhoneNumber(personDto.getPhoneNumber());
+        } else {
+            // otherwise get Person Entity from DB
+            person = this.getPersonEntity(personDto);
+        }
+        return person;
     }
 }

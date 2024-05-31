@@ -123,4 +123,30 @@ public class UserServiceImpl implements UserService {
         personEntity.setPhoneNumber(personDto.getPhoneNumber());
         personEntity.setEmail(personDto.getEmail());
     }
+
+    public User getUserEntityById(Integer usedId) {
+        Optional<User> existingUser = userRepository.findById(usedId);
+        return existingUser.orElseThrow(() -> new NotFoundException("User not found with id: " + usedId));
+    }
+    
+    public User getOrCreateUserEntityByDto(UserDto userDto, Person person) {
+        User user = null;
+        if(userDto.getId() == null){
+            if(this.usernameAlreadyExists(userDto.getUsername())){
+                throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
+            }
+            user = this.createUserEntityByDto(userDto, person);
+        } else {
+            user = this.getUserEntityById(userDto.getId());
+        }
+        return user;
+    }
+
+    private User createUserEntityByDto(UserDto userDto, Person person){
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setPerson(person);
+        return user;
+    }
 }

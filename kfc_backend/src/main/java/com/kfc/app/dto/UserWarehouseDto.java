@@ -10,14 +10,6 @@ public class UserWarehouseDto {
     private String warehouseName; // Name of the associated warehouse
     public UserWarehouseDto() {
     }
-    
-    public UserWarehouseDto(UserWarehouse userWarehouse) {
-        this.userId = userWarehouse.getUser().getId();
-        this.userName = userWarehouse.getUser().getUsername();
-        this.warehouseId = userWarehouse.getWarehouse().getId();
-        this.warehouseName = userWarehouse.getWarehouse().getName();
-    }
-
     public Integer getUserId() {
         return userId;
     }

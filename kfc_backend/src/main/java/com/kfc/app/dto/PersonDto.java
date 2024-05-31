@@ -22,13 +22,6 @@ public class PersonDto implements Serializable {
     private String email;
     public PersonDto() {
     }
-    public PersonDto(Person person) {
-        this.firstName = person.getFirstName();
-        this.lastName = person.getLastName();
-        this.email = person.getLastName();
-        this.documentNumber = person.getDocumentNumber();
-        this.phoneNumber = person.getPhoneNumber();
-    }
 
     public Integer getId() {
         return id;

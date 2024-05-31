@@ -14,16 +14,6 @@ public class WarehouseDto {
     private LocalDateTime updatedAt;
     private UserDto userDto;
 
-    public WarehouseDto(Warehouse warehouse) {
-        this.id = warehouse.getId();
-        this.name = warehouse.getName();
-        this.address = warehouse.getAddress();
-        this.city = warehouse.getCity();
-        this.status = warehouse.isStatus();
-        this.updatedAt = LocalDateTime.now();
-        this.userDto = new UserDto(warehouse.getUser());
-    }
-
     public Integer getId() {
         return id;
     }
@@ -78,5 +68,13 @@ public class WarehouseDto {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public UserDto getUserDto() {
+        return userDto;
+    }
+
+    public void setUserDto(UserDto userDto) {
+        this.userDto = userDto;
     }
 }
