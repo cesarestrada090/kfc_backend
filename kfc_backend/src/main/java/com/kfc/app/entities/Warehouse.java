@@ -37,8 +37,8 @@ public class Warehouse {
     private LocalDateTime updatedAt;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name =  "user_id")
-    private User user;
+    @JoinColumn(name =  "org_id")
+    private Organization organization;
 
     public Integer getId() {
         return id;
@@ -96,11 +96,11 @@ public class Warehouse {
         this.city = city;
     }
 
-    public User getUser() {
-        return user;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

@@ -1,13 +1,12 @@
 package com.kfc.app.service.impl;
-import com.kfc.app.dto.PersonDto;
-import com.kfc.app.dto.ResultPageWrapper;
-import com.kfc.app.dto.UserDto;
-import com.kfc.app.dto.WarehouseDto;
+import com.kfc.app.dto.*;
+import com.kfc.app.entities.Organization;
 import com.kfc.app.entities.Person;
 import com.kfc.app.entities.User;
 import com.kfc.app.entities.Warehouse;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.WarehouseRepository;
+import com.kfc.app.service.OrgService;
 import com.kfc.app.service.PersonService;
 import com.kfc.app.service.UserService;
 import com.kfc.app.service.WarehouseService;
@@ -25,50 +24,54 @@ public class WarehouseServiceImpl implements WarehouseService {
     
     private final WarehouseRepository warehouseRepository;
     private final UserService userService;
+    private final OrgService orgService;
     private final PersonService personService;
 
     public WarehouseServiceImpl(WarehouseRepository warehouseRepository,
                                 UserService userService,
-                                PersonService personService) {
+                                PersonService personService,
+                                OrgService orgService) {
         this.warehouseRepository = warehouseRepository;
+        this.orgService = orgService;
         this.userService = userService;
         this.personService = personService;
     }
 
     @Override
     public WarehouseDto save(WarehouseDto dto) {
-        Person person = personService.getOrCreatePersonEntity(dto.getUser().getPerson());
-        User user = userService.getOrCreateUserEntityByDto(dto.getUser(), person);
-        Warehouse warehouse = getWarehouseEntityByDto(dto, user);
+        Organization organization = orgService.getOrCreateOrgEntity(dto.getOrganizationDto());
+        Warehouse warehouse = getWarehouseEntityByDto(dto, organization);
         warehouse = warehouseRepository.save(warehouse);
         return MapperUtil.map(warehouse, WarehouseDto.class);
     }
 
     @Override
-    public WarehouseDto update(Integer id, WarehouseDto dto) {
+    public WarehouseDto update(Integer id, WarehouseDto warehouseDto) {
         Optional<Warehouse> optionalWarehouse = warehouseRepository.findById(id);
         if (optionalWarehouse.isEmpty()) {
             throw new NotFoundException("Warehouse not found with id: " + id);
         }
-        PersonDto personDto = dto.getUser().getPerson();
-        // update person
-        Person person = personService.getPersonEntity(dto.getUser().getPerson());
-        person.setFirstName(personDto.getFirstName());
-        person.setLastName(personDto.getLastName());
-        person.setEmail(personDto.getEmail());
-        person.setPhoneNumber(personDto.getPhoneNumber());
-        person.setDocumentNumber(personDto.getDocumentNumber());
-        
-        // update user
-        UserDto userDto = dto.getUser();
-        User user = userService.getUserEntityById(userDto.getId());
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setPerson(person);
-        user.setUpdatedAt(LocalDateTime.now());
+
+        PersonDto legalRepresentationDto = warehouseDto.getOrganizationDto().getLegalRepresentation();
+        // update legal Representation person
+        Person legalRepresentation = personService.getPersonEntity(legalRepresentationDto);
+        legalRepresentation.setFirstName(legalRepresentationDto.getFirstName());
+        legalRepresentation.setLastName(legalRepresentationDto.getLastName());
+        legalRepresentation.setEmail(legalRepresentationDto.getEmail());
+        legalRepresentation.setPhoneNumber(legalRepresentationDto.getPhoneNumber());
+        legalRepresentation.setDocumentNumber(legalRepresentationDto.getDocumentNumber());
+
+        // update organization
+        OrganizationDto orgDto = warehouseDto.getOrganizationDto();
+        Organization organization = orgService.getOrgEntityById(orgDto.getId());
+        organization.setDescription(orgDto.getDescription());
+        organization.setRuc(orgDto.getRuc());
+        organization.setName(orgDto.getName());
+        organization.setUpdatedAt(LocalDateTime.now());
+        organization.setLegalRepresentationPerson(legalRepresentation);
         
         //update warehouse
-        Warehouse warehouse = getWarehouseEntityByDto(dto, user);
+        Warehouse warehouse = getWarehouseEntityByDto(warehouseDto, organization);
         warehouseRepository.save(warehouse);
         return MapperUtil.map(optionalWarehouse.get(), WarehouseDto.class);
     }
@@ -90,7 +93,7 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .orElseThrow(() -> new NotFoundException("Warehouse not found with id: " + id));
     }
 
-    public Warehouse getWarehouseEntityByDto(WarehouseDto warehouseDto, User user){
+    public Warehouse getWarehouseEntityByDto(WarehouseDto warehouseDto, Organization org){
         Warehouse warehouse = new Warehouse();
         warehouse.setId(warehouseDto.getId());
         warehouse.setName(warehouseDto.getName());
@@ -98,7 +101,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         warehouse.setCity(warehouseDto.getCity());
         warehouse.setStatus(warehouseDto.isStatus());
         warehouse.setUpdatedAt(LocalDateTime.now());
-        warehouse.setUser(user);
+        warehouse.setOrganization(org);
         if(warehouseDto.getId() == null){
             warehouse.setCreatedAt(LocalDateTime.now());
         }

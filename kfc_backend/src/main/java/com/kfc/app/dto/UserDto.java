@@ -20,6 +20,7 @@ public class UserDto implements Serializable {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private PersonDto person;
+    private OrganizationDto organizationDto;
     public UserDto() {
     }
 
@@ -49,6 +50,8 @@ public class UserDto implements Serializable {
                 ", password='" + password + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", person=" + person +
+                ", organizationDto=" + organizationDto +
                 '}';
     }
 
@@ -89,5 +92,13 @@ public class UserDto implements Serializable {
 
     public void setPerson(PersonDto person) {
         this.person = person;
+    }
+
+    public OrganizationDto getOrganizationDto() {
+        return organizationDto;
+    }
+
+    public void setOrganizationDto(OrganizationDto organizationDto) {
+        this.organizationDto = organizationDto;
     }
 }

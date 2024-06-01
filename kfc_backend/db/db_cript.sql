@@ -45,10 +45,10 @@ CREATE TABLE warehouse (
   FOREIGN KEY (created_by) REFERENCES user(id)
 );
 
-CREATE TABLE user_warehouse (
-  user_id INT NOT NULL,
+CREATE TABLE organization_warehouse (
+  org_id INT NOT NULL,
   warehouse_id INT NOT NULL,
-  PRIMARY KEY (user_id, warehouse_id),  -- Composite primary key
-  FOREIGN KEY (user_id) REFERENCES user(id),
+  PRIMARY KEY (org_id, warehouse_id),  -- Composite primary key
+  FOREIGN KEY (org_id) REFERENCES organization(id),
   FOREIGN KEY (warehouse_id) REFERENCES warehouse(id)
 );

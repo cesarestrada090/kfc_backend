@@ -12,5 +12,4 @@ public interface WarehouseService {
     WarehouseDto update(Integer id, WarehouseDto dto);
     ResultPageWrapper<WarehouseDto> findByUserId(Integer userId, Pageable paging);
     WarehouseDto getById(Integer id);
-    Warehouse getWarehouseEntityByDto(WarehouseDto warehouseDto, User user);
 }

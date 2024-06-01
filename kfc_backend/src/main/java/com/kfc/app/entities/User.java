@@ -32,7 +32,10 @@ public class User {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name =  "person_id")
     private Person person;
-    
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name =  "organization_id")
+    private Organization organization;
 
     public Integer getId() {
         return id;
@@ -80,5 +83,13 @@ public class User {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

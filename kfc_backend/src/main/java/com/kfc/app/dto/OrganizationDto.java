@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 public class OrganizationDto implements Serializable {
 
-    private Long id;
+    private Integer id;
     private String name;
     private String ruc;
     private String description;
@@ -26,11 +26,11 @@ public class OrganizationDto implements Serializable {
         this.updatedAt = organization.getUpdatedAt();
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -1,13 +1,17 @@
 package com.kfc.app.service.impl;
 
+import com.kfc.app.dto.OrganizationDto;
 import com.kfc.app.dto.PersonDto;
 import com.kfc.app.dto.ResultPageWrapper;
+import com.kfc.app.entities.Organization;
 import com.kfc.app.entities.Person;
 import com.kfc.app.entities.User;
 import com.kfc.app.exception.DuplicatedException;
 import com.kfc.app.exception.InvalidPasswordException;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.PersonRepository;
+import com.kfc.app.service.OrgService;
+import com.kfc.app.service.PersonService;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
 import com.kfc.app.dto.UserDto;
@@ -25,12 +29,16 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PersonRepository personRepository;
+    private final PersonService personService;
+    private final OrgService orgService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PersonRepository personRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           PersonService personService, 
+                           OrgService orgService) {
         this.userRepository = userRepository;
-        this.personRepository = personRepository;
+        this.personService = personService;
+        this.orgService = orgService;
     }
 
     @Override
@@ -39,16 +47,23 @@ public class UserServiceImpl implements UserService {
         if (this.usernameAlreadyExists(userDto.getUsername())){
             throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
         }
-        if(personRepository.findByDocumentNumber(personDto.getDocumentNumber()).isPresent()){
+        if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
             throw new DuplicatedException("Document number duplicated for " + personDto.getDocumentNumber());
         }
-        Person personEntity = MapperUtil.map(personDto, Person.class);;
-        User userEntity = MapperUtil.map(userDto, User.class);
-        userEntity.setCreatedAt(LocalDateTime.now());
-        userEntity.setUpdatedAt(LocalDateTime.now());
-        userEntity.setPerson(personEntity);
-        userEntity = userRepository.save(userEntity);
-        return MapperUtil.map(userEntity, UserDto.class);
+        Person personEntity = personService.getOrCreatePersonEntity(userDto.getPerson());
+        Organization orgEntity = orgService.getOrCreateOrgEntity(userDto.getOrganizationDto());
+        
+        // user creation
+        User user = new User();
+        user.setPassword(userDto.getPassword());
+        user.setUsername(userDto.getPassword());
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setPerson(personEntity);
+        user.setOrganization(orgEntity);
+        user = userRepository.save(user);
+        
+        return MapperUtil.map(user, UserDto.class);
     }
     @Override
     public UserDto update(Integer id, UserDto userDto){
@@ -113,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
     private void preparePersonEntity(PersonDto personDto, Person personEntity) {
         if(personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber()) ){
-            if(personRepository.findByDocumentNumber(personDto.getDocumentNumber()).isPresent()){
+            if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
                 throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
             }
             personEntity.setDocumentNumber(personDto.getDocumentNumber());

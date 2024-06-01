@@ -12,6 +12,7 @@ import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.OrganizationRepository;
 import com.kfc.app.repository.PersonRepository;
 import com.kfc.app.service.OrgService;
+import com.kfc.app.service.PersonService;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,12 @@ import java.util.Optional;
 public class OrganizationServiceImpl implements OrgService {
 
     private final OrganizationRepository orgRepository;
-    private final PersonRepository personRepository;
+    private final PersonService personService;
 
     @Autowired
-    public OrganizationServiceImpl(OrganizationRepository orgRepository, PersonRepository personRepository) {
+    public OrganizationServiceImpl(OrganizationRepository orgRepository, PersonService personService) {
         this.orgRepository = orgRepository;
-        this.personRepository = personRepository;
+        this.personService = personService;
     }
 
     @Override
@@ -84,6 +85,14 @@ public class OrganizationServiceImpl implements OrgService {
         }
         return MapperUtil.map(user.get(), OrganizationDto.class);
     }
+
+
+    public Organization getOrgEntityById(Integer orgId) {
+        Optional<Organization> existingOrg = orgRepository.findById(orgId);
+        return existingOrg.orElseThrow(() -> new NotFoundException("Org not found with id: " + orgId));
+    }
+    
+    
     @Override
     public ResultPageWrapper<OrganizationDto> getAll(Pageable paging){
         Page<Organization> orgs = orgRepository.findAll(paging);
@@ -96,7 +105,7 @@ public class OrganizationServiceImpl implements OrgService {
 
     private void preparePersonEntity(PersonDto personDto, Person personEntity) {
         if(personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber()) ){
-            if(personRepository.findByDocumentNumber(personDto.getDocumentNumber()).isPresent()){
+            if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
                 throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
             }
             personEntity.setDocumentNumber(personDto.getDocumentNumber());
@@ -105,5 +114,36 @@ public class OrganizationServiceImpl implements OrgService {
         personEntity.setFirstName(personDto.getFirstName());
         personEntity.setPhoneNumber(personDto.getPhoneNumber());
         personEntity.setEmail(personDto.getEmail());
+    }
+
+    public Organization getOrCreateOrgEntity(OrganizationDto orgDto){
+        Organization organization = null;
+        // If organization does not have id, we should create new Person
+        if (orgDto.getId() == null) {
+            // Check if the new Org is using duplicated ruc
+            if(this.rucAlreadyExists(orgDto.getRuc()) != null){
+                throw new DuplicatedException("RUC duplicated for " + orgDto.getRuc());
+            }
+            
+            // Init Org Creation
+            
+            // Prepare Person Entity
+            PersonDto legalPersonDto = orgDto.getLegalRepresentation();
+            Person legalPerson = personService.getOrCreatePersonEntity(legalPersonDto);
+            // Create Organization Entity
+            organization = new Organization();
+            organization.setRuc(orgDto.getRuc());
+            organization.setName(orgDto.getName());
+            organization.setLegalRepresentationPerson(legalPerson);
+            organization.setDescription(orgDto.getDescription());
+            organization.setCreatedAt(LocalDateTime.now());
+            organization.setUpdatedAt(LocalDateTime.now());
+            organization.setUpdatedAt(LocalDateTime.now());
+            
+        } else {
+            // otherwise get Person Entity from DB
+            organization = this.getOrgEntityById(orgDto.getId());
+        }
+        return organization;
     }
 }

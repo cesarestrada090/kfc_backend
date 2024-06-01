@@ -10,7 +10,7 @@ public class WarehouseDto {
     private boolean status; 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UserDto user;
+    private OrganizationDto organizationDto;
 
     public Integer getId() {
         return id;
@@ -68,11 +68,11 @@ public class WarehouseDto {
         this.updatedAt = updatedAt;
     }
 
-    public UserDto getUser() {
-        return user;
+    public OrganizationDto getOrganizationDto() {
+        return organizationDto;
     }
 
-    public void setUser(UserDto user) {
-        this.user = user;
+    public void setOrganizationDto(OrganizationDto organizationDto) {
+        this.organizationDto = organizationDto;
     }
 }
