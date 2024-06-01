@@ -1,5 +1,6 @@
 package com.kfc.app.service.impl;
 
+import com.kfc.app.dto.OrganizationDto;
 import com.kfc.app.dto.PersonDto;
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.Organization;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto save(UserDto userDto) {
         PersonDto personDto = userDto.getPerson();
         if (this.usernameAlreadyExists(userDto.getUsername())){
@@ -52,27 +55,60 @@ public class UserServiceImpl implements UserService {
         Organization orgEntity = orgService.getOrCreateOrgEntity(userDto.getOrganization());
         
         // user creation
-        User user = new User();
-        user.setPassword(userDto.getPassword());
-        user.setUsername(userDto.getUsername());
-        user.setUpdatedAt(LocalDateTime.now());
-        user.setCreatedAt(LocalDateTime.now());
-        user.setPerson(personEntity);
-        user.setOrganization(orgEntity);
+        User user = createUserEntityByDto(userDto, personEntity, orgEntity);
         user = userRepository.save(user);
         
         return MapperUtil.map(user, UserDto.class);
     }
     @Override
+    @Transactional
     public UserDto update(Integer id, UserDto userDto){
-        Optional<User> currentUser = userRepository.findById(id);
-        if(currentUser.isEmpty()){
-            throw new NotFoundException("User does not exists: " + userDto);
+        // validate different username
+        User userEntity = this.getUserEntityById(id);
+        if (userDto.hasDifferentUserName(userEntity.getUsername())) {
+            if(usernameAlreadyExists(userDto.getUsername())){
+                throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
+            }
         }
-        User userEntity = currentUser.get();
-        Person personEntity = userEntity.getPerson();
-        preparePersonEntity(userDto.getPerson(), personEntity);
-        prepareUserEntity(userDto, userEntity);
+        
+        // validate different document number for user person
+        PersonDto personDto = userDto.getPerson();
+        Person personEntity = personService.getPersonEntity(personDto);
+        if (personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber())) {
+            if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
+                throw new DuplicatedException("Username duplicated for " + personDto.getDocumentNumber());
+            }
+        }
+        
+        // validate different RUC for Organization
+        OrganizationDto orgDto = userDto.getOrganization();
+        Organization orgEntity = orgService.getOrgEntityById(orgDto.getId());
+        if(orgDto.hasDifferentRUC(orgEntity.getRuc())){
+            if(orgService.rucAlreadyExists(orgDto.getRuc())){
+                throw new DuplicatedException("RUC duplicated for " + userDto.getUsername());
+            }
+        }
+
+        // update organization
+        orgEntity.setDescription(orgDto.getDescription());
+        orgEntity.setRuc(orgDto.getRuc());
+        orgEntity.setName(orgDto.getName());
+        orgEntity.setUpdatedAt(LocalDateTime.now());
+        
+        // update user person
+        personEntity.setFirstName(personDto.getFirstName());
+        personEntity.setLastName(personDto.getLastName());
+        personEntity.setEmail(personDto.getEmail());
+        personEntity.setPhoneNumber(personDto.getPhoneNumber());
+        personEntity.setDocumentNumber(personDto.getDocumentNumber());
+        
+        // update User
+        userEntity.setPerson(personEntity);
+        userEntity.setOrganization(orgEntity);
+        userEntity.setUsername(userDto.getUsername());
+        userEntity.setPassword(userDto.getPassword());
+        userEntity.setUpdatedAt(LocalDateTime.now());
+        
         userRepository.save(userEntity);
         return MapperUtil.map(userEntity, userDto.getClass());
     }
@@ -110,39 +146,13 @@ public class UserServiceImpl implements UserService {
         }
         return PaginationUtil.prepareResultWrapper(users, UserDto.class);
     }
-    private void prepareUserEntity(UserDto userDto, User userEntity) {
-        // if you include username different from actual, 
-        // we need to validate that the new one should not exist
-        if(userDto.hasDifferentUserName(userEntity.getUsername()) ){
-            if(usernameAlreadyExists(userDto.getUsername())){
-                throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
-            }
-            userEntity.setUsername(userDto.getUsername());
-        }
-
-        userEntity.setPassword(userDto.getPassword());
-        userEntity.setUpdatedAt(LocalDateTime.now());
-    }
-
-    private void preparePersonEntity(PersonDto personDto, Person personEntity) {
-        if(personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber()) ){
-            if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
-                throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
-            }
-            personEntity.setDocumentNumber(personDto.getDocumentNumber());
-        }
-        personEntity.setLastName(personDto.getLastName());
-        personEntity.setFirstName(personDto.getFirstName());
-        personEntity.setPhoneNumber(personDto.getPhoneNumber());
-        personEntity.setEmail(personDto.getEmail());
-    }
 
     public User getUserEntityById(Integer usedId) {
         Optional<User> existingUser = userRepository.findById(usedId);
         return existingUser.orElseThrow(() -> new NotFoundException("User not found with id: " + usedId));
     }
     
-    public User getOrCreateUserEntityByDto(UserDto userDto, Person person) {
+    public User getOrCreateUserEntityByDto(UserDto userDto, Person person, Organization organization) {
         User user = null;
         // If user does not have id, we should create new Person
         if(userDto.getId() == null){
@@ -150,7 +160,7 @@ public class UserServiceImpl implements UserService {
             if(this.usernameAlreadyExists(userDto.getUsername())){
                 throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
             }
-            user = this.createUserEntityByDto(userDto, person);
+            user = this.createUserEntityByDto(userDto, person, organization);
         } else {
             // otherwise get the user from db
             user = this.getUserEntityById(userDto.getId());
@@ -158,10 +168,11 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private User createUserEntityByDto(UserDto userDto, Person person){
+    private User createUserEntityByDto(UserDto userDto, Person person, Organization organization){
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
+        user.setOrganization(organization);
         user.setPerson(person);
         user.setUpdatedAt(LocalDateTime.now());
         user.setCreatedAt(LocalDateTime.now());

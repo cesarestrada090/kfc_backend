@@ -81,4 +81,7 @@ public class OrganizationDto implements Serializable {
     public void setLegalRepresentation(PersonDto legalRepresentation) {
         this.legalRepresentation = legalRepresentation;
     }
+    public boolean hasDifferentRUC(String ruc){
+        return this.getRuc()!= null && !this.getRuc().equals(ruc);
+    }
 }

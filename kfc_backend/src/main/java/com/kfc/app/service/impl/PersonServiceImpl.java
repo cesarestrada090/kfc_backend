@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Optional;
 
 @Service
@@ -26,6 +28,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @Transactional
     public PersonDto save(PersonDto personDto) {
         Person person = MapperUtil.map(personDto, Person.class);
         if(personRepository.findByDocumentNumber(person.getDocumentNumber()).isPresent()){
@@ -35,6 +38,7 @@ public class PersonServiceImpl implements PersonService {
         return MapperUtil.map(person, PersonDto.class);
     }
     @Override
+    @Transactional
     public PersonDto update(Integer id, PersonDto personDto){
         Optional<Person> currentPerson = personRepository.findById(id);
         if(currentPerson.isEmpty()){

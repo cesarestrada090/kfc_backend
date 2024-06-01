@@ -14,6 +14,7 @@ import com.kfc.app.util.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -37,6 +38,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    @Transactional
     public WarehouseDto save(WarehouseDto dto) {
         Organization organization = orgService.getOrCreateOrgEntity(dto.getOrganizationDto());
         Warehouse warehouse = getWarehouseEntityByDto(dto, organization);
@@ -45,6 +47,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    @Transactional
     public WarehouseDto update(Integer id, WarehouseDto warehouseDto) {
         Optional<Warehouse> optionalWarehouse = warehouseRepository.findById(id);
         if (optionalWarehouse.isEmpty()) {

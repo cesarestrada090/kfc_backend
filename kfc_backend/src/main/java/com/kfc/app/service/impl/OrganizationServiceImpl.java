@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class OrganizationServiceImpl implements OrgService {
     }
 
     @Override
+    @Transactional
     public OrganizationDto save(OrganizationDto orgDto) {
         PersonDto personDto = orgDto.getLegalRepresentation();
         if (this.rucAlreadyExists(orgDto.getRuc())){
@@ -50,6 +52,7 @@ public class OrganizationServiceImpl implements OrgService {
         return MapperUtil.map(userEntity, OrganizationDto.class);
     }
     @Override
+    @Transactional
     public OrganizationDto update(Integer id, OrganizationDto orgDto){
         Optional<Organization> currentOrg = orgRepository.findById(id);
         if(currentOrg.isEmpty()){
