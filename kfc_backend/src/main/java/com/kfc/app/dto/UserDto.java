@@ -4,7 +4,6 @@ import com.kfc.app.entities.User;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -20,7 +19,7 @@ public class UserDto implements Serializable {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private PersonDto person;
-    private OrganizationDto organizationDto;
+    private OrganizationDto organization;
     public UserDto() {
     }
 
@@ -51,7 +50,7 @@ public class UserDto implements Serializable {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", person=" + person +
-                ", organizationDto=" + organizationDto +
+                ", organizationDto=" + organization +
                 '}';
     }
 
@@ -94,11 +93,11 @@ public class UserDto implements Serializable {
         this.person = person;
     }
 
-    public OrganizationDto getOrganizationDto() {
-        return organizationDto;
+    public OrganizationDto getOrganization() {
+        return organization;
     }
 
-    public void setOrganizationDto(OrganizationDto organizationDto) {
-        this.organizationDto = organizationDto;
+    public void setOrganization(OrganizationDto organization) {
+        this.organization = organization;
     }
 }

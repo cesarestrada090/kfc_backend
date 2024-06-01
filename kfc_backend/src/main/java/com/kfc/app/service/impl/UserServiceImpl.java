@@ -1,6 +1,5 @@
 package com.kfc.app.service.impl;
 
-import com.kfc.app.dto.OrganizationDto;
 import com.kfc.app.dto.PersonDto;
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.Organization;
@@ -9,7 +8,6 @@ import com.kfc.app.entities.User;
 import com.kfc.app.exception.DuplicatedException;
 import com.kfc.app.exception.InvalidPasswordException;
 import com.kfc.app.exception.NotFoundException;
-import com.kfc.app.repository.PersonRepository;
 import com.kfc.app.service.OrgService;
 import com.kfc.app.service.PersonService;
 import com.kfc.app.util.MapperUtil;
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserService {
             throw new DuplicatedException("Document number duplicated for " + personDto.getDocumentNumber());
         }
         Person personEntity = personService.getOrCreatePersonEntity(userDto.getPerson());
-        Organization orgEntity = orgService.getOrCreateOrgEntity(userDto.getOrganizationDto());
+        Organization orgEntity = orgService.getOrCreateOrgEntity(userDto.getOrganization());
         
         // user creation
         User user = new User();
