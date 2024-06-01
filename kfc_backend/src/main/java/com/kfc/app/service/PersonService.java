@@ -18,6 +18,5 @@ public interface PersonService {
     PersonDto getById(Integer id);
     Person getPersonEntity(PersonDto personDto);
     Person getOrCreatePersonEntity(PersonDto personDto);
-    void validatePersonDto(PersonDto personDto);
     ResultPageWrapper<PersonDto> getAll(Pageable paging);
 }
