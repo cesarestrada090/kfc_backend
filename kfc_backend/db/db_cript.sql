@@ -27,8 +27,8 @@ CREATE TABLE user (
   password VARCHAR(255) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  person_id INT UNIQUE,
-  organization_id INT UNIQUE,
+  person_id INT,
+  organization_id INT,
   FOREIGN KEY (person_id) REFERENCES person(id),
   FOREIGN KEY (organization_id) REFERENCES organization(id)
 );
@@ -39,10 +39,10 @@ CREATE TABLE warehouse (
   address VARCHAR(255) NOT NULL,
   city VARCHAR(255) NOT NULL,
   status BOOLEAN NOT NULL DEFAULT true,
+  organization_id INT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  created_by INT,
-  FOREIGN KEY (created_by) REFERENCES user(id)
+  created_by INT
 );
 
 CREATE TABLE organization_warehouse (
