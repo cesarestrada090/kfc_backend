@@ -37,7 +37,7 @@ public class Warehouse {
     private LocalDateTime updatedAt;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name =  "org_id")
+    @JoinColumn(name =  "organization_id")
     private Organization organization;
 
     public Integer getId() {

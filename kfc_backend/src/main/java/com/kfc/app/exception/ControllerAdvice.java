@@ -36,7 +36,7 @@ public class ControllerAdvice {
     @ExceptionHandler(DuplicatedException.class)
     public ResponseEntity<Map<String, String>> duplicatedExceptions(Exception ex) {
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("Duplicated User", ex.getMessage());
+        errorResponse.put("Duplicated", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
