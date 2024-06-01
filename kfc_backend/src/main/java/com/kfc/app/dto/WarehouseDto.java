@@ -1,7 +1,5 @@
 package com.kfc.app.dto;
 
-import com.kfc.app.entities.Warehouse;
-
 import java.time.LocalDateTime;
 
 public class WarehouseDto {
@@ -12,7 +10,7 @@ public class WarehouseDto {
     private boolean status; 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UserDto userDto;
+    private UserDto user;
 
     public Integer getId() {
         return id;
@@ -70,11 +68,11 @@ public class WarehouseDto {
         this.updatedAt = updatedAt;
     }
 
-    public UserDto getUserDto() {
-        return userDto;
+    public UserDto getUser() {
+        return user;
     }
 
-    public void setUserDto(UserDto userDto) {
-        this.userDto = userDto;
+    public void setUser(UserDto user) {
+        this.user = user;
     }
 }

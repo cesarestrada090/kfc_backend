@@ -131,12 +131,15 @@ public class UserServiceImpl implements UserService {
     
     public User getOrCreateUserEntityByDto(UserDto userDto, Person person) {
         User user = null;
+        // If user does not have id, we should create new Person
         if(userDto.getId() == null){
+            // Check if the new user have an existing username
             if(this.usernameAlreadyExists(userDto.getUsername())){
                 throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
             }
             user = this.createUserEntityByDto(userDto, person);
         } else {
+            // otherwise get the user from db
             user = this.getUserEntityById(userDto.getId());
         }
         return user;
@@ -147,6 +150,8 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
         user.setPerson(person);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setCreatedAt(LocalDateTime.now());
         return user;
     }
 }

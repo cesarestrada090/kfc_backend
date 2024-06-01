@@ -42,12 +42,12 @@ public class WarehouseController extends AbstractController {
         return new ResponseEntity<>(warehouseDto, HttpStatus.OK);
     }
 
-    @GetMapping(value="/{id}")
-    public ResponseEntity<Map<String,Object>> getAllByUserId(@PathVariable(value = "id") int id,
+    @GetMapping(value="/{userId}")
+    public ResponseEntity<Map<String,Object>> getAllByUserId(@PathVariable(value = "userId") int userId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size){
         Pageable paging = PageRequest.of(page-1, size);
-        ResultPageWrapper<WarehouseDto> resultPageWrapper = warehouseService.findByUserId(id,paging);
+        ResultPageWrapper<WarehouseDto> resultPageWrapper = warehouseService.findByUserId(userId,paging);
         Map<String, Object> response = prepareResponse(resultPageWrapper);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

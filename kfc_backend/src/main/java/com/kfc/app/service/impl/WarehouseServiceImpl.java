@@ -1,4 +1,5 @@
 package com.kfc.app.service.impl;
+import com.kfc.app.dto.PersonDto;
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.dto.UserDto;
 import com.kfc.app.dto.WarehouseDto;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -35,9 +37,9 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     public WarehouseDto save(WarehouseDto dto) {
-        Person person = personService.getOrCreatePersonEntity(dto.getUserDto().getPerson());
-        User user = userService.getOrCreateUserEntityByDto(dto.getUserDto(), person);
-        Warehouse warehouse = createWarehouseEntityByDto(dto, user);
+        Person person = personService.getOrCreatePersonEntity(dto.getUser().getPerson());
+        User user = userService.getOrCreateUserEntityByDto(dto.getUser(), person);
+        Warehouse warehouse = getWarehouseEntityByDto(dto, user);
         warehouse = warehouseRepository.save(warehouse);
         return MapperUtil.map(warehouse, WarehouseDto.class);
     }
@@ -48,9 +50,25 @@ public class WarehouseServiceImpl implements WarehouseService {
         if (optionalWarehouse.isEmpty()) {
             throw new NotFoundException("Warehouse not found with id: " + id);
         }
-        Person person = personService.getOrCreatePersonEntity(dto.getUserDto().getPerson());
-        User user = userService.getOrCreateUserEntityByDto(dto.getUserDto(), person);
-        Warehouse warehouse = createWarehouseEntityByDto(dto, user);
+        PersonDto personDto = dto.getUser().getPerson();
+        // update person
+        Person person = personService.getPersonEntity(dto.getUser().getPerson());
+        person.setFirstName(personDto.getFirstName());
+        person.setLastName(personDto.getLastName());
+        person.setEmail(personDto.getEmail());
+        person.setPhoneNumber(personDto.getPhoneNumber());
+        person.setDocumentNumber(personDto.getDocumentNumber());
+        
+        // update user
+        UserDto userDto = dto.getUser();
+        User user = userService.getUserEntityById(userDto.getId());
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setPerson(person);
+        user.setUpdatedAt(LocalDateTime.now());
+        
+        //update warehouse
+        Warehouse warehouse = getWarehouseEntityByDto(dto, user);
         warehouseRepository.save(warehouse);
         return MapperUtil.map(optionalWarehouse.get(), WarehouseDto.class);
     }
@@ -67,21 +85,23 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     public WarehouseDto getById(Integer id) {
-        Optional<Warehouse> optionalWarehouse = warehouseRepository.findById(id);
-        if (optionalWarehouse.isEmpty()) {
-            throw new NotFoundException("Warehouse not found with id: " + id);
-        }
-        return MapperUtil.map(optionalWarehouse.get(), WarehouseDto.class);
+        return warehouseRepository.findById(id)
+                .map(warehouse -> MapperUtil.map(warehouse, WarehouseDto.class))
+                .orElseThrow(() -> new NotFoundException("Warehouse not found with id: " + id));
     }
 
-    private Warehouse createWarehouseEntityByDto(WarehouseDto warehouseDto, User user){
+    public Warehouse getWarehouseEntityByDto(WarehouseDto warehouseDto, User user){
         Warehouse warehouse = new Warehouse();
         warehouse.setId(warehouseDto.getId());
         warehouse.setName(warehouseDto.getName());
         warehouse.setAddress(warehouseDto.getAddress());
         warehouse.setCity(warehouseDto.getCity());
         warehouse.setStatus(warehouseDto.isStatus());
+        warehouse.setUpdatedAt(LocalDateTime.now());
         warehouse.setUser(user);
+        if(warehouseDto.getId() == null){
+            warehouse.setCreatedAt(LocalDateTime.now());
+        }
         return warehouse;
     }
 }

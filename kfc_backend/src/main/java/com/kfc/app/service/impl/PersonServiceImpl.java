@@ -104,6 +104,7 @@ public class PersonServiceImpl implements PersonService {
             person = new Person();
             person.setFirstName(personDto.getFirstName());
             person.setLastName(personDto.getLastName());
+            person.setEmail(personDto.getEmail());
             person.setDocumentNumber(personDto.getDocumentNumber());
             person.setPhoneNumber(personDto.getPhoneNumber());
         } else {
