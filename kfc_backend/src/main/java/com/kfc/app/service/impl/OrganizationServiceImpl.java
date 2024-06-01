@@ -121,7 +121,7 @@ public class OrganizationServiceImpl implements OrgService {
         // If organization does not have id, we should create new Person
         if (orgDto.getId() == null) {
             // Check if the new Org is using duplicated ruc
-            if(this.rucAlreadyExists(orgDto.getRuc()) != null){
+            if(this.rucAlreadyExists(orgDto.getRuc())){
                 throw new DuplicatedException("RUC duplicated for " + orgDto.getRuc());
             }
             

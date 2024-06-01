@@ -2,7 +2,6 @@ package com.kfc.app.service.impl;
 import com.kfc.app.dto.*;
 import com.kfc.app.entities.Organization;
 import com.kfc.app.entities.Person;
-import com.kfc.app.entities.User;
 import com.kfc.app.entities.Warehouse;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.WarehouseRepository;
@@ -77,9 +76,9 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public ResultPageWrapper<WarehouseDto> findByUserId(Integer userId, Pageable paging) {
-        UserDto userDto = userService.getById(userId);
-        Page<Warehouse> warehouses = warehouseRepository.findByUserId(userDto.getId(), paging);
+    public ResultPageWrapper<WarehouseDto> findByOrganizationId(Integer orgId, Pageable paging) {
+        OrganizationDto orgDto = orgService.getById(orgId);
+        Page<Warehouse> warehouses = warehouseRepository.findByOrganizationId(orgDto.getId(), paging);
         if(warehouses.isEmpty()){
             throw new NotFoundException("Warehouses does not exists");
         }

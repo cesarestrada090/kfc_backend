@@ -47,7 +47,7 @@ public class WarehouseController extends AbstractController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size){
         Pageable paging = PageRequest.of(page-1, size);
-        ResultPageWrapper<WarehouseDto> resultPageWrapper = warehouseService.findByUserId(userId,paging);
+        ResultPageWrapper<WarehouseDto> resultPageWrapper = warehouseService.findByOrganizationId(userId,paging);
         Map<String, Object> response = prepareResponse(resultPageWrapper);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
