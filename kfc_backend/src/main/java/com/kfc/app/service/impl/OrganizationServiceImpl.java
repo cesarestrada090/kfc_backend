@@ -60,8 +60,27 @@ public class OrganizationServiceImpl implements OrgService {
         }
         Organization organization = currentOrg.get();
         Person personEntity = organization.getLegalRepresentationPerson();
-        preparePersonEntity(orgDto.getLegalRepresentation(), personEntity);
-        prepareOrgEntity(orgDto, organization);
+        PersonDto personDto = orgDto.getLegalRepresentation();
+        
+        if(personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber()) ){
+            if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
+                throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
+            }
+            personEntity.setDocumentNumber(personDto.getDocumentNumber());
+        }
+        
+        // Legal representation
+        personEntity.setLastName(personDto.getLastName());
+        personEntity.setFirstName(personDto.getFirstName());
+        personEntity.setPhoneNumber(personDto.getPhoneNumber());
+        personEntity.setEmail(personDto.getEmail());
+
+        // Org creation
+        orgDto.setDescription(orgDto.getDescription());
+        orgDto.setName(orgDto.getName());
+        orgDto.setRuc(orgDto.getRuc());
+        orgDto.setUpdatedAt(LocalDateTime.now());
+        
         orgRepository.save(organization);
         return MapperUtil.map(organization, orgDto.getClass());
     }
@@ -121,18 +140,12 @@ public class OrganizationServiceImpl implements OrgService {
 
     public Organization getOrCreateOrgEntity(OrganizationDto orgDto){
         Organization organization = null;
-        // If organization does not have id, we should create new Person
         if (orgDto.getId() == null) {
-            // Check if the new Org is using duplicated ruc
+            // Create Organization
             if(this.rucAlreadyExists(orgDto.getRuc())){
                 throw new DuplicatedException("RUC duplicated for " + orgDto.getRuc());
             }
-            
-            // Init Org Creation
-            
-            // Prepare Person Entity
-            PersonDto legalPersonDto = orgDto.getLegalRepresentation();
-            Person legalPerson = personService.getOrCreatePersonEntity(legalPersonDto);
+            Person legalPerson = personService.getOrCreatePersonEntity(orgDto.getLegalRepresentation());
             // Create Organization Entity
             organization = new Organization();
             organization.setRuc(orgDto.getRuc());
@@ -141,8 +154,6 @@ public class OrganizationServiceImpl implements OrgService {
             organization.setDescription(orgDto.getDescription());
             organization.setCreatedAt(LocalDateTime.now());
             organization.setUpdatedAt(LocalDateTime.now());
-            organization.setUpdatedAt(LocalDateTime.now());
-            
         } else {
             // otherwise get Person Entity from DB
             organization = this.getOrgEntityById(orgDto.getId());

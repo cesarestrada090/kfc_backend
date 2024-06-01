@@ -44,12 +44,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto save(UserDto userDto) {
-        PersonDto personDto = userDto.getPerson();
         if (this.usernameAlreadyExists(userDto.getUsername())){
             throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
-        }
-        if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
-            throw new DuplicatedException("Document number duplicated for " + personDto.getDocumentNumber());
         }
         Person personEntity = personService.getOrCreatePersonEntity(userDto.getPerson());
         Organization orgEntity = orgService.getOrCreateOrgEntity(userDto.getOrganization());
@@ -73,7 +69,7 @@ public class UserServiceImpl implements UserService {
         
         // validate different document number for user person
         PersonDto personDto = userDto.getPerson();
-        Person personEntity = personService.getPersonEntity(personDto);
+        Person personEntity = personService.getPersonEntityById(personDto.getId());
         if (personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber())) {
             if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
                 throw new DuplicatedException("Username duplicated for " + personDto.getDocumentNumber());

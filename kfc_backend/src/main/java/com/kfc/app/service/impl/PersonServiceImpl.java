@@ -40,14 +40,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional
     public PersonDto update(Integer id, PersonDto personDto){
-        Optional<Person> currentPerson = personRepository.findById(id);
-        if(currentPerson.isEmpty()){
-            throw new NotFoundException("User does not exists: " + personDto);
-        }
-        Person personEntity = currentPerson.get();
+        Person personEntity = getPersonEntityById(id);
         // if you include document number different from actual, 
         // we need to validate that the new one should not exist
-        if(personDto.hasDifferentDocumentNumber(currentPerson.get().getDocumentNumber()) ){
+        if(personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber()) ){
             if(findByDocumentNumber(personDto.getDocumentNumber()) != null){
                 throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
             }
@@ -78,12 +74,12 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person getPersonEntity(PersonDto personDto) {
-        Optional<Person> optPerson = personRepository.findById(personDto.getId());
+    public Person getPersonEntityById(Integer id) {
+        Optional<Person> optPerson = personRepository.findById(id);
         if(optPerson.isPresent()){
             return optPerson.get();
         } else {
-            throw new NotFoundException("Person not found with id: " + personDto.getId());
+            throw new NotFoundException("Person not found with id: " + id);
         }
     }
 
@@ -98,9 +94,8 @@ public class PersonServiceImpl implements PersonService {
 
     public Person getOrCreatePersonEntity(PersonDto personDto){
         Person person = null;
-        // If person does not have id, we should create new Person
         if (personDto.getId() == null) {
-            // Check if the new Person is using duplicated document number
+            // Create Person
             if(this.findByDocumentNumber(personDto.getDocumentNumber()) != null){
                 throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
             }
@@ -113,7 +108,7 @@ public class PersonServiceImpl implements PersonService {
             person.setPhoneNumber(personDto.getPhoneNumber());
         } else {
             // otherwise get Person Entity from DB
-            person = this.getPersonEntity(personDto);
+            person = this.getPersonEntityById(personDto.getId());
         }
         return person;
     }

@@ -12,10 +12,10 @@ CREATE TABLE person (
 
 CREATE TABLE organization (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL,
   RUC VARCHAR(80) NOT NULL UNIQUE,
-  legal_representation_person_id INT UNIQUE,
-  description VARCHAR(255) NOT NULL UNIQUE,
+  legal_representation_person_id INT,
+  description VARCHAR(255) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (legal_representation_person_id) REFERENCES person(id)

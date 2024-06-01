@@ -56,7 +56,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
         PersonDto legalRepresentationDto = warehouseDto.getOrganizationDto().getLegalRepresentation();
         // update legal Representation person
-        Person legalRepresentation = personService.getPersonEntity(legalRepresentationDto);
+        Person legalRepresentation = personService.getPersonEntityById(legalRepresentationDto.getId());
         legalRepresentation.setFirstName(legalRepresentationDto.getFirstName());
         legalRepresentation.setLastName(legalRepresentationDto.getLastName());
         legalRepresentation.setEmail(legalRepresentationDto.getEmail());
