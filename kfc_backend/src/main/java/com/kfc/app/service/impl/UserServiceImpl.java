@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         // user creation
         User user = new User();
         user.setPassword(userDto.getPassword());
-        user.setUsername(userDto.getPassword());
+        user.setUsername(userDto.getUsername());
         user.setUpdatedAt(LocalDateTime.now());
         user.setCreatedAt(LocalDateTime.now());
         user.setPerson(personEntity);
