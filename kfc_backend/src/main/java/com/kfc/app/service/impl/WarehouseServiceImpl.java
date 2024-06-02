@@ -40,7 +40,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     @Transactional
     public WarehouseDto save(WarehouseDto dto) {
-        Organization organization = orgService.getOrCreateOrgEntity(dto.getOrganizationDto());
+        Organization organization = orgService.getOrCreateOrgEntity(dto.getOrganization());
         Warehouse warehouse = getWarehouseEntityByDto(dto, organization);
         warehouse = warehouseRepository.save(warehouse);
         return MapperUtil.map(warehouse, WarehouseDto.class);
@@ -54,7 +54,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             throw new NotFoundException("Warehouse not found with id: " + id);
         }
 
-        PersonDto legalRepresentationDto = warehouseDto.getOrganizationDto().getLegalRepresentation();
+        PersonDto legalRepresentationDto = warehouseDto.getOrganization().getLegalRepresentation();
         // update legal Representation person
         Person legalRepresentation = personService.getPersonEntityById(legalRepresentationDto.getId());
         legalRepresentation.setFirstName(legalRepresentationDto.getFirstName());
@@ -64,7 +64,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         legalRepresentation.setDocumentNumber(legalRepresentationDto.getDocumentNumber());
 
         // update organization
-        OrganizationDto orgDto = warehouseDto.getOrganizationDto();
+        OrganizationDto orgDto = warehouseDto.getOrganization();
         Organization organization = orgService.getOrgEntityById(orgDto.getId());
         organization.setDescription(orgDto.getDescription());
         organization.setRuc(orgDto.getRuc());

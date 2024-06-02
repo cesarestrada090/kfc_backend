@@ -40,6 +40,23 @@ public class Warehouse {
     @JoinColumn(name =  "organization_id")
     private Organization organization;
 
+    public Warehouse() {
+    }
+
+    @Override
+    public String toString() {
+        return "Warehouse{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", organization=" + organization +
+                '}';
+    }
+
     public Integer getId() {
         return id;
     }
