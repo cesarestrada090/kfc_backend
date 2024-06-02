@@ -50,19 +50,23 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Transactional
     public WarehouseDto update(Integer id, WarehouseDto warehouseDto) {
         Optional<Warehouse> optionalWarehouse = warehouseRepository.findById(id);
+        PersonDto legalRepresentationDto = null;
         if (optionalWarehouse.isEmpty()) {
             throw new NotFoundException("Warehouse not found with id: " + id);
         }
 
-        PersonDto legalRepresentationDto = warehouseDto.getOrganization().getLegalRepresentation();
-        // update legal Representation person
-        Person legalRepresentation = personService.getPersonEntityById(legalRepresentationDto.getId());
-        legalRepresentation.setFirstName(legalRepresentationDto.getFirstName());
-        legalRepresentation.setLastName(legalRepresentationDto.getLastName());
-        legalRepresentation.setEmail(legalRepresentationDto.getEmail());
-        legalRepresentation.setPhoneNumber(legalRepresentationDto.getPhoneNumber());
-        legalRepresentation.setDocumentNumber(legalRepresentationDto.getDocumentNumber());
-
+        
+        if(warehouseDto.getOrganization().getId() != null){
+            legalRepresentationDto = warehouseDto.getOrganization().getLegalRepresentation();
+            // update legal Representation person
+            Person legalRepresentation = personService.getPersonEntityById(legalRepresentationDto.getId());
+            legalRepresentation.setFirstName(legalRepresentationDto.getFirstName());
+            legalRepresentation.setLastName(legalRepresentationDto.getLastName());
+            legalRepresentation.setEmail(legalRepresentationDto.getEmail());
+            legalRepresentation.setPhoneNumber(legalRepresentationDto.getPhoneNumber());
+            legalRepresentation.setDocumentNumber(legalRepresentationDto.getDocumentNumber());
+        }
+        
         // update organization
         OrganizationDto orgDto = warehouseDto.getOrganization();
         Organization organization = orgService.getOrgEntityById(orgDto.getId());
