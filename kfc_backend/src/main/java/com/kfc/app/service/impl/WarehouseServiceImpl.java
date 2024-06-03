@@ -79,8 +79,16 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
         
         //update warehouse
-        Warehouse warehouse = getWarehouseEntityByDto(warehouseDto, organization);
+        Warehouse warehouse = warehouseRepository.getReferenceById(id);
+        
+        warehouse.setName(warehouseDto.getName());
+        warehouse.setAddress(warehouseDto.getAddress());
+        warehouse.setCity(warehouseDto.getCity());
+        warehouse.setStatus(warehouseDto.isStatus());
+        warehouse.setUpdatedAt(LocalDateTime.now());
+        warehouse.setOrganization(organization);
         warehouseRepository.save(warehouse);
+        
         return MapperUtil.map(optionalWarehouse.get(), WarehouseDto.class);
     }
 
@@ -103,16 +111,12 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     public Warehouse getWarehouseEntityByDto(WarehouseDto warehouseDto, Organization org){
         Warehouse warehouse = new Warehouse();
-        warehouse.setId(warehouseDto.getId());
         warehouse.setName(warehouseDto.getName());
         warehouse.setAddress(warehouseDto.getAddress());
         warehouse.setCity(warehouseDto.getCity());
         warehouse.setStatus(warehouseDto.isStatus());
         warehouse.setUpdatedAt(LocalDateTime.now());
         warehouse.setOrganization(org);
-        if(warehouseDto.getId() == null){
-            warehouse.setCreatedAt(LocalDateTime.now());
-        }
         return warehouse;
     }
 }
