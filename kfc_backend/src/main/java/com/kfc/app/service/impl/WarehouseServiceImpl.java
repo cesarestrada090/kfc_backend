@@ -50,31 +50,30 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Transactional
     public WarehouseDto update(Integer id, WarehouseDto warehouseDto) {
         Optional<Warehouse> optionalWarehouse = warehouseRepository.findById(id);
-        PersonDto legalRepresentationDto = null;
+        
         if (optionalWarehouse.isEmpty()) {
             throw new NotFoundException("Warehouse not found with id: " + id);
         }
 
-        
-        if(warehouseDto.getOrganization().getId() != null){
-            legalRepresentationDto = warehouseDto.getOrganization().getLegalRepresentation();
-            // update legal Representation person
-            Person legalRepresentation = personService.getPersonEntityById(legalRepresentationDto.getId());
-            legalRepresentation.setFirstName(legalRepresentationDto.getFirstName());
-            legalRepresentation.setLastName(legalRepresentationDto.getLastName());
-            legalRepresentation.setEmail(legalRepresentationDto.getEmail());
-            legalRepresentation.setPhoneNumber(legalRepresentationDto.getPhoneNumber());
-            legalRepresentation.setDocumentNumber(legalRepresentationDto.getDocumentNumber());
-        }
-        
-        // update organization
+        // Update organization
         OrganizationDto orgDto = warehouseDto.getOrganization();
         Organization organization = orgService.getOrgEntityById(orgDto.getId());
         organization.setDescription(orgDto.getDescription());
         organization.setRuc(orgDto.getRuc());
         organization.setName(orgDto.getName());
         organization.setUpdatedAt(LocalDateTime.now());
-        organization.setLegalRepresentationPerson(legalRepresentation);
+        
+        // Update person
+        PersonDto personDto = warehouseDto.getOrganization().getLegalRepresentation();
+        if(personDto != null) {
+            Person legalRepresentation = organization.getLegalRepresentationPerson();
+            legalRepresentation.setFirstName(personDto.getFirstName());
+            legalRepresentation.setLastName(personDto.getLastName());
+            legalRepresentation.setEmail(personDto.getEmail());
+            legalRepresentation.setPhoneNumber(personDto.getPhoneNumber());
+            legalRepresentation.setDocumentNumber(personDto.getDocumentNumber());
+            organization.setLegalRepresentationPerson(legalRepresentation);
+        }
         
         //update warehouse
         Warehouse warehouse = getWarehouseEntityByDto(warehouseDto, organization);

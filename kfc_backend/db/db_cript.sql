@@ -44,11 +44,3 @@ CREATE TABLE warehouse (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created_by INT
 );
-
-CREATE TABLE organization_warehouse (
-  org_id INT NOT NULL,
-  warehouse_id INT NOT NULL,
-  PRIMARY KEY (org_id, warehouse_id),  -- Composite primary key
-  FOREIGN KEY (org_id) REFERENCES organization(id),
-  FOREIGN KEY (warehouse_id) REFERENCES warehouse(id)
-);
