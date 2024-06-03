@@ -58,14 +58,17 @@ public class WarehouseServiceImpl implements WarehouseService {
         // Update organization
         OrganizationDto orgDto = warehouseDto.getOrganization();
         Organization organization = orgService.getOrgEntityById(orgDto.getId());
-        organization.setDescription(orgDto.getDescription());
-        organization.setRuc(orgDto.getRuc());
-        organization.setName(orgDto.getName());
-        organization.setUpdatedAt(LocalDateTime.now());
+        if(orgDto.getDescription() != null){
+            organization.setDescription(orgDto.getDescription());
+            organization.setRuc(orgDto.getRuc());
+            organization.setName(orgDto.getName());
+            organization.setUpdatedAt(LocalDateTime.now());
+        }
+        
         
         // Update person
         PersonDto personDto = warehouseDto.getOrganization().getLegalRepresentation();
-        if(personDto != null) {
+        if(personDto != null && personDto.getFirstName() != null) {
             Person legalRepresentation = organization.getLegalRepresentationPerson();
             legalRepresentation.setFirstName(personDto.getFirstName());
             legalRepresentation.setLastName(personDto.getLastName());

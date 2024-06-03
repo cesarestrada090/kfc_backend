@@ -86,18 +86,22 @@ public class UserServiceImpl implements UserService {
         }
 
         // update organization
-        orgEntity.setDescription(orgDto.getDescription());
-        orgEntity.setRuc(orgDto.getRuc());
-        orgEntity.setName(orgDto.getName());
-        orgEntity.setUpdatedAt(LocalDateTime.now());
+        if(orgDto.getDescription() != null){
+            orgEntity.setDescription(orgDto.getDescription());
+            orgEntity.setRuc(orgDto.getRuc());
+            orgEntity.setName(orgDto.getName());
+            orgEntity.setUpdatedAt(LocalDateTime.now());
+        }
+        
         
         // update user person
-        personEntity.setFirstName(personDto.getFirstName());
-        personEntity.setLastName(personDto.getLastName());
-        personEntity.setEmail(personDto.getEmail());
-        personEntity.setPhoneNumber(personDto.getPhoneNumber());
-        personEntity.setDocumentNumber(personDto.getDocumentNumber());
-        
+        if(personDto.getFirstName() != null) {
+            personEntity.setFirstName(personDto.getFirstName());
+            personEntity.setLastName(personDto.getLastName());
+            personEntity.setEmail(personDto.getEmail());
+            personEntity.setPhoneNumber(personDto.getPhoneNumber());
+            personEntity.setDocumentNumber(personDto.getDocumentNumber());
+        }
         // update User
         userEntity.setPerson(personEntity);
         userEntity.setOrganization(orgEntity);
