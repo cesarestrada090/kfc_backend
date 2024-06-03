@@ -43,7 +43,11 @@ public class OrganizationServiceImpl implements OrgService {
         if (this.rucAlreadyExists(orgDto.getRuc())){
             throw new DuplicatedException("Ruc duplicated for " + orgDto.getRuc());
         }
-        Person personEntity = MapperUtil.map(personDto, Person.class);;
+        if (orgDto.getLegalRepresentation() != null &&
+                personService.findByDocumentNumber(orgDto.getLegalRepresentation().getDocumentNumber()) != null){
+            throw new DuplicatedException("Document Number duplicated for " + orgDto.getLegalRepresentation().getDocumentNumber());
+        }
+        Person personEntity = MapperUtil.map(personDto, Person.class);
         Organization userEntity = MapperUtil.map(orgDto, Organization.class);
         userEntity.setCreatedAt(LocalDateTime.now());
         userEntity.setUpdatedAt(LocalDateTime.now());
@@ -76,10 +80,10 @@ public class OrganizationServiceImpl implements OrgService {
         personEntity.setEmail(personDto.getEmail());
 
         // Org creation
-        orgDto.setDescription(orgDto.getDescription());
-        orgDto.setName(orgDto.getName());
-        orgDto.setRuc(orgDto.getRuc());
-        orgDto.setUpdatedAt(LocalDateTime.now());
+        organization.setDescription(orgDto.getDescription());
+        organization.setName(orgDto.getName());
+        organization.setRuc(orgDto.getRuc());
+        organization.setUpdatedAt(LocalDateTime.now());
         
         orgRepository.save(organization);
         return MapperUtil.map(organization, orgDto.getClass());
