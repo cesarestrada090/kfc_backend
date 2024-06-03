@@ -88,13 +88,6 @@ public class OrganizationServiceImpl implements OrgService {
         orgRepository.save(organization);
         return MapperUtil.map(organization, orgDto.getClass());
     }
-
-    private void prepareOrgEntity(OrganizationDto orgDto, Organization orgEntity) {
-        orgEntity.setDescription(orgDto.getDescription());
-        orgEntity.setName(orgDto.getName());
-        orgEntity.setRuc(orgDto.getRuc());
-        orgEntity.setUpdatedAt(LocalDateTime.now());
-    }
     
     @Override
     public Boolean rucAlreadyExists(String ruc) {

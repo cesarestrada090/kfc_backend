@@ -44,3 +44,17 @@ CREATE TABLE warehouse (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created_by INT
 );
+
+CREATE TABLE mechanic (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  licence_code VARCHAR(55) NOT NULL,
+  specialization VARCHAR(155),
+  notes VARCHAR(655),
+  status BOOLEAN NOT NULL DEFAULT true,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  person_id INT,
+  organization_id INT,
+  FOREIGN KEY (person_id) REFERENCES person(id),
+  FOREIGN KEY (organization_id) REFERENCES organization(id)
+);
