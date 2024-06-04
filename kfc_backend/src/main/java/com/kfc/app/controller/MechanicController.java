@@ -33,9 +33,6 @@ public class MechanicController extends AbstractController {
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<MechanicDto> getById(@PathVariable(value = "id") Integer id) {
         MechanicDto mechanicDTO = mechanicService.getById(id);
-        if (mechanicDTO == null) {
-            return ResponseEntity.notFound().build();
-        }
         return new ResponseEntity<>(mechanicDTO, HttpStatus.OK);
     }
 
