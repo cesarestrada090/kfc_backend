@@ -58,3 +58,13 @@ CREATE TABLE mechanic (
   FOREIGN KEY (person_id) REFERENCES person(id),
   FOREIGN KEY (organization_id) REFERENCES organization(id)
 );
+
+CREATE TABLE workshop (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  code VARCHAR(55) NOT NULL,
+  description VARCHAR(355),
+  status BOOLEAN NOT NULL DEFAULT true,
+  organization_id INT NOT NULL,
+  FOREIGN KEY (organization_id) REFERENCES organization(id)
+);
