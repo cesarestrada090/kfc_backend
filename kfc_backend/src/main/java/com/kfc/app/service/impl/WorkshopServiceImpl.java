@@ -73,7 +73,7 @@ public class WorkshopServiceImpl implements WorkshopService {
             organization.setLegalRepresentationPerson(legalRepresentation);
         }
         
-        //update warehouse
+        //update workshop
         Workshop workshop = workshopRepository.getReferenceById(id);
         workshop.setName(dto.getName());
         workshop.setDescription(dto.getDescription());
