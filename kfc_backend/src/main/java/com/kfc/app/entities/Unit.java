@@ -37,7 +37,7 @@ public class Unit {
     private LocalDateTime updatedAt;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "organization_id", nullable = false)
+    @JoinColumn(name = "organization_id")
     private Organization organization;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

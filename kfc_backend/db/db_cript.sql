@@ -76,7 +76,7 @@ CREATE TABLE unit (
   serial_number VARCHAR(255), -- Machinery Serial Number
   registration_plate VARCHAR(155),  -- C5D-480
   description VARCHAR(255), -- description of the maintenance
-  organization_id INT NOT NULL,
+  organization_id INT NULL,
   status BOOLEAN NOT NULL DEFAULT true,
   created_by INT NOT NULL,
   last_updated_by INT NOT NULL,
