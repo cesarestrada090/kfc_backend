@@ -82,5 +82,7 @@ CREATE TABLE unit (
   last_updated_by INT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (organization_id) REFERENCES organization(id)
+  FOREIGN KEY (organization_id) REFERENCES organization(id),
+  FOREIGN KEY (created_by) REFERENCES user(id),
+  FOREIGN KEY (last_updated_by) REFERENCES user(id)
 );
