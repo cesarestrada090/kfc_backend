@@ -68,3 +68,14 @@ CREATE TABLE workshop (
   organization_id INT NOT NULL,
   FOREIGN KEY (organization_id) REFERENCES organization(id)
 );
+
+CREATE TABLE unit (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  type VARCHAR(255) NOT NULL,  -- (e.g., truck, machinery, etc.)
+  model VARCHAR(255), -- Honda, Volvo, Sony, Phillips
+  serial_number VARCHAR(255), -- Machinery Serial Number
+  registration_plate VARCHAR(155),  -- C5D-480
+  description VARCHAR(255), -- description of the maintenance
+  organization_id INT NOT NULL,
+  FOREIGN KEY (organization_id) REFERENCES organization(id)
+);
