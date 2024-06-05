@@ -109,7 +109,7 @@ public class UnitServiceImpl implements UnitService {
         unit.setDescription(unitDto.getDescription());
         unit.setType(unitDto.getType());
         unit.setRegistrationPlate(unitDto.getRegistrationPlate());
-        unit.setSerialNumber(unit.getSerialNumber());
+        unit.setSerialNumber(unitDto.getSerialNumber());
         unit.setOrganization(org);
         return unit;
     }

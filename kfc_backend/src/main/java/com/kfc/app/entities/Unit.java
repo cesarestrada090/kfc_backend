@@ -25,7 +25,7 @@ public class Unit {
     @Column(name = "description", length = 255)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "organization_id", nullable = false)
     private Organization organization;
 
