@@ -7,11 +7,12 @@ import com.kfc.app.dto.UnitDto;
 import com.kfc.app.entities.Organization;
 import com.kfc.app.entities.Person;
 import com.kfc.app.entities.Unit;
+import com.kfc.app.entities.User;
 import com.kfc.app.exception.NotFoundException;
-import com.kfc.app.repository.UnitRepository;
 import com.kfc.app.repository.UnitRepository;
 import com.kfc.app.service.OrgService;
 import com.kfc.app.service.UnitService;
+import com.kfc.app.service.UserService;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
 import org.springframework.data.domain.Page;
@@ -27,18 +28,20 @@ public class UnitServiceImpl implements UnitService {
     
     private final UnitRepository unitRepository;
     private final OrgService orgService;
+    private final UserService userService;
 
     public UnitServiceImpl(UnitRepository unitRepository,
-                           OrgService orgService) {
+                           OrgService orgService,
+                           UserService userService) {
         this.unitRepository = unitRepository;
         this.orgService = orgService;
+        this.userService = userService;
     }
 
     @Override
     @Transactional
     public UnitDto save(UnitDto dto) {
-        Organization organization = orgService.getOrCreateOrgEntity(dto.getOrganization());
-        Unit workshop = getUnitEntityByDto(dto, organization);
+        Unit workshop = getUnitEntityByDto(dto);
         workshop = unitRepository.save(workshop);
         return MapperUtil.map(workshop, UnitDto.class);
     }
@@ -46,7 +49,6 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public UnitDto update(Integer id, UnitDto dto) {
         Optional<Unit> optionalUnit = unitRepository.findById(id);
-        
         if (optionalUnit.isEmpty()) {
             throw new NotFoundException("Unit not found with id: " + id);
         }
@@ -60,7 +62,6 @@ public class UnitServiceImpl implements UnitService {
             organization.setName(orgDto.getName());
             organization.setUpdatedAt(LocalDateTime.now());
         }
-        
         
         // Update person
         PersonDto personDto = dto.getOrganization().getLegalRepresentation();
@@ -80,7 +81,10 @@ public class UnitServiceImpl implements UnitService {
         unit.setDescription(dto.getDescription());
         unit.setType(dto.getType());
         unit.setRegistrationPlate(dto.getRegistrationPlate());
-        unit.setSerialNumber(unit.getSerialNumber());
+        unit.setSerialNumber(dto.getSerialNumber());
+        unit.setUpdatedAt(LocalDateTime.now());
+        // TODO: change for logged in user
+        unit.setLastUpdatedBy(unit.getCreatedBy());
         unitRepository.save(unit);
         
         return MapperUtil.map(optionalUnit.get(), UnitDto.class);
@@ -103,13 +107,21 @@ public class UnitServiceImpl implements UnitService {
                 .orElseThrow(() -> new NotFoundException("Unit not found with id: " + id));
     }
 
-    public Unit getUnitEntityByDto(UnitDto unitDto, Organization org){
+    private Unit getUnitEntityByDto(UnitDto unitDto){
+        Organization org = orgService.getOrCreateOrgEntity(unitDto.getOrganization());
+        User user = userService.getUserEntityById(unitDto.getCreatedBy().getId());
         Unit unit = new Unit();
         unit.setModel(unitDto.getModel());
         unit.setDescription(unitDto.getDescription());
         unit.setType(unitDto.getType());
         unit.setRegistrationPlate(unitDto.getRegistrationPlate());
+        unit.setCreatedAt(LocalDateTime.now());
+        unit.setUpdatedAt(LocalDateTime.now());
+        unit.setRegistrationPlate(unitDto.getRegistrationPlate());
         unit.setSerialNumber(unitDto.getSerialNumber());
+        // TODO: change for logged in user
+        unit.setLastUpdatedBy(user);
+        unit.setCreatedBy(user);
         unit.setOrganization(org);
         return unit;
     }

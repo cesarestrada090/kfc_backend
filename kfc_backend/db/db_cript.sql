@@ -77,5 +77,10 @@ CREATE TABLE unit (
   registration_plate VARCHAR(155),  -- C5D-480
   description VARCHAR(255), -- description of the maintenance
   organization_id INT NOT NULL,
+  status BOOLEAN NOT NULL DEFAULT true,
+  created_by INT NOT NULL,
+  last_updated_by INT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (organization_id) REFERENCES organization(id)
 );

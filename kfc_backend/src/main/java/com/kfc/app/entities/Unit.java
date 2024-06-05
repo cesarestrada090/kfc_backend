@@ -1,6 +1,9 @@
 package com.kfc.app.entities;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "unit")
@@ -25,9 +28,25 @@ public class Unit {
     @Column(name = "description", length = 255)
     private String description;
 
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "organization_id", nullable = false)
     private Organization organization;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "last_updated_by", nullable = false)
+    private User lastUpdatedBy;
 
     public Integer getId() {
         return id;
@@ -83,5 +102,37 @@ public class Unit {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public User getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(User lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
     }
 }

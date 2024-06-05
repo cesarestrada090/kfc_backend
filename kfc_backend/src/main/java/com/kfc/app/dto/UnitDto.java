@@ -1,6 +1,7 @@
 package com.kfc.app.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class UnitDto implements Serializable {
 
@@ -11,6 +12,10 @@ public class UnitDto implements Serializable {
     private String registrationPlate;
     private String description;
     private OrganizationDto organization;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private UserDto createdBy;
+    private UserDto lastUpdatedBy;
 
     public Integer getId() {
         return id;
@@ -66,5 +71,37 @@ public class UnitDto implements Serializable {
 
     public void setOrganization(OrganizationDto organization) {
         this.organization = organization;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public UserDto getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserDto createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public UserDto getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(UserDto lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
     }
 }
