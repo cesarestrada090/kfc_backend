@@ -75,8 +75,8 @@ public class UnitServiceImpl implements UnitService {
             organization.setLegalRepresentationPerson(legalRepresentation);
         }
         
-        //update workshop
-        Unit unit = unitRepository.getReferenceById(id);
+        //update unit
+        Unit unit = optionalUnit.get();
         unit.setModel(dto.getModel());
         unit.setDescription(dto.getDescription());
         unit.setType(dto.getType());
