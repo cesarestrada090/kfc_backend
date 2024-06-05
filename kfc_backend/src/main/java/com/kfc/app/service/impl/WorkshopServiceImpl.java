@@ -37,9 +37,9 @@ public class WorkshopServiceImpl implements WorkshopService {
     @Transactional
     public WorkshopDto save(WorkshopDto dto) {
         Organization organization = orgService.getOrCreateOrgEntity(dto.getOrganization());
-        Workshop warehouse = getWorkshopEntityByDto(dto, organization);
-        warehouse = workshopRepository.save(warehouse);
-        return MapperUtil.map(warehouse, WorkshopDto.class);
+        Workshop workshop = getWorkshopEntityByDto(dto, organization);
+        workshop = workshopRepository.save(workshop);
+        return MapperUtil.map(workshop, WorkshopDto.class);
     }
 
     @Override
@@ -79,6 +79,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshop.setDescription(dto.getDescription());
         workshop.setCode(dto.getCode());
         workshop.setUpdatedAt(LocalDateTime.now());
+        workshop.setStatus(dto.isStatus());
         workshop.setOrganization(organization);
         workshopRepository.save(workshop);
         
@@ -109,6 +110,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshop.setCode(workshopDto.getCode());
         workshop.setStatus(workshopDto.isStatus());
         workshop.setUpdatedAt(LocalDateTime.now());
+        workshop.setCreatedAt(LocalDateTime.now());
         workshop.setOrganization(org);
         return workshop;
     }

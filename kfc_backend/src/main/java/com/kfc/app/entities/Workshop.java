@@ -4,7 +4,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-
+@Entity
+@Table(name = "workshop")
 public class Workshop {
 
     @Id
@@ -23,7 +24,7 @@ public class Workshop {
     @Column(name = "status", nullable = false)
     private boolean status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "organization_id", nullable = false)
     private Organization organization;
 
