@@ -107,7 +107,7 @@ public class UnitServiceImpl implements UnitService {
                 .orElseThrow(() -> new NotFoundException("Unit not found with id: " + id));
     }
 
-    private Unit getUnitEntityByDto(UnitDto unitDto){
+    public Unit getUnitEntityByDto(UnitDto unitDto){
         Organization org = orgService.getOrCreateOrgEntity(unitDto.getOrganization());
         User user = userService.getUserEntityById(unitDto.getCreatedBy().getId());
         Unit unit = new Unit();

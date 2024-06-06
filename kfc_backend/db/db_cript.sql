@@ -86,3 +86,16 @@ CREATE TABLE unit (
   FOREIGN KEY (created_by) REFERENCES user(id),
   FOREIGN KEY (last_updated_by) REFERENCES user(id)
 );
+
+CREATE TABLE maintenance (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  unit_id INT NOT NULL,
+  workshop_id INT NOT NULL,
+  maintenance_date DATETIME NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  completed BOOLEAN NOT NULL DEFAULT false,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (unit_id) REFERENCES unit(id),
+  FOREIGN KEY (workshop_id) REFERENCES workshop(id)
+);
