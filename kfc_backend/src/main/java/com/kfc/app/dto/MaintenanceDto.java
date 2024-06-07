@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class MaintenanceDto implements Serializable {
     private Integer id;
@@ -15,6 +16,7 @@ public class MaintenanceDto implements Serializable {
     private boolean completed;
     private UserDto createdBy;
     private UserDto lastUpdatedBy;
+    private List<MaintenanceDetailDto> maintenanceDetails; 
     public MaintenanceDto() {
     }
 
@@ -80,5 +82,13 @@ public class MaintenanceDto implements Serializable {
 
     public void setLastUpdatedBy(UserDto lastUpdatedBy) {
         this.lastUpdatedBy = lastUpdatedBy;
+    }
+
+    public List<MaintenanceDetailDto> getMaintenanceDetails() {
+        return maintenanceDetails;
+    }
+
+    public void setMaintenanceDetails(List<MaintenanceDetailDto> maintenanceDetails) {
+        this.maintenanceDetails = maintenanceDetails;
     }
 }

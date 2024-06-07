@@ -1,11 +1,17 @@
 package com.kfc.app.service.impl;
 
-import com.kfc.app.dto.*;
-import com.kfc.app.entities.*;
+import com.kfc.app.dto.MaintenanceDto;
+import com.kfc.app.dto.ResultPageWrapper;
+import com.kfc.app.entities.Maintenance;
+import com.kfc.app.entities.Unit;
+import com.kfc.app.entities.User;
+import com.kfc.app.entities.Workshop;
 import com.kfc.app.exception.NotFoundException;
-import com.kfc.app.repository.MaintenanceDetailRepository;
 import com.kfc.app.repository.MaintenanceRepository;
-import com.kfc.app.service.*;
+import com.kfc.app.service.MaintenanceService;
+import com.kfc.app.service.UnitService;
+import com.kfc.app.service.UserService;
+import com.kfc.app.service.WorkshopService;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
 import org.springframework.data.domain.Page;
@@ -14,26 +20,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MaintenanceServiceImpl implements MaintenanceService {
+public class MaintenanceDetailServiceImpl implements MaintenanceService {
     
     private final MaintenanceRepository maintenanceRepository;
-    private final MaintenanceDetailRepository maintenanceDetailRepository;
     private final UnitService unitService;
     private final UserService userService;
     private final WorkshopService workshopService;
 
-    public MaintenanceServiceImpl(MaintenanceRepository maintenanceRepository,
-                                  MaintenanceDetailRepository maintenanceDetailRepository,
-                                  WorkshopService workshopService,
-                                  UnitService unitService,
-                                  UserService userService) {
+    public MaintenanceDetailServiceImpl(MaintenanceRepository maintenanceRepository,
+                                        WorkshopService workshopService,
+                                        UnitService unitService,
+                                        UserService userService) {
         this.maintenanceRepository = maintenanceRepository;
-        this.maintenanceDetailRepository = maintenanceDetailRepository;
         this.workshopService = workshopService;
         this.unitService = unitService;
         this.userService = userService;
@@ -56,25 +57,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         maintenance.setLastUpdatedBy(user);
         maintenance.setCreatedBy(user);
         maintenance = maintenanceRepository.save(maintenance);
-        saveMaintenanceDetail(dto, maintenance.getId());
         return MapperUtil.map(maintenance, MaintenanceDto.class);
-    }
-
-    private void saveMaintenanceDetail(MaintenanceDto dto, Integer maintenanceId) {
-        if (dto.getMaintenanceDetails().isEmpty()) {
-            return;
-        }
-        List<MaintenanceDetail> maintenanceDetailList = new ArrayList<>();
-        for (MaintenanceDetailDto detailDto : dto.getMaintenanceDetails()) {
-            MaintenanceDetail detail = new MaintenanceDetail();
-            detail.setMaintenanceId(maintenanceId);  // Set the saved maintenance ID
-            detail.setQuantity(detailDto.getQuantity());
-            detail.setDescription(detailDto.getDescription());
-            maintenanceDetailList.add(detail);
-        }
-        if (!maintenanceDetailList.isEmpty()){
-            maintenanceDetailRepository.saveAll(maintenanceDetailList);
-        }
     }
 
     @Override
