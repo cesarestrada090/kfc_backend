@@ -23,6 +23,15 @@ public class PersonDto implements Serializable {
     public PersonDto() {
     }
 
+    public PersonDto(Integer id, String firstName, String lastName, String documentNumber, String phoneNumber, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.documentNumber = documentNumber;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
+
     public Integer getId() {
         return id;
     }
