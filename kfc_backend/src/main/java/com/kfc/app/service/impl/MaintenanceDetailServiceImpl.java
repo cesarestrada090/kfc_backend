@@ -44,7 +44,7 @@ public class MaintenanceDetailServiceImpl implements MaintenanceDetailService {
     public MaintenanceDetailDto update(Integer id, MaintenanceDetailDto dto) {
         Optional<MaintenanceDetail> maintenanceOpt = maintenanceDetailRepository.findById(id);
         if (maintenanceOpt.isEmpty()) {
-            throw new NotFoundException("Maintenance not found with id: " + id);
+            throw new NotFoundException("Maintenance Detail not found with id: " + id);
         }
         MaintenanceDetail maintenanceDetail = maintenanceOpt.get();
         maintenanceDetail.setQuantity(dto.getQuantity());
