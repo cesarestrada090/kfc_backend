@@ -99,3 +99,13 @@ CREATE TABLE maintenance (
   FOREIGN KEY (unit_id) REFERENCES unit(id),
   FOREIGN KEY (workshop_id) REFERENCES workshop(id)
 );
+
+CREATE TABLE maintenance_detail (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  maintenance_id INT NOT NULL,
+  -- product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  FOREIGN KEY (maintenance_id) REFERENCES maintenance(id)
+  -- FOREIGN KEY (product_id) REFERENCES product(id) -- 
+);
