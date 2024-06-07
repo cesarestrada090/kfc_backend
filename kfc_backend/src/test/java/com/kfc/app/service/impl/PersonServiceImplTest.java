@@ -70,15 +70,12 @@ public class PersonServiceImplTest {
         Integer id = 1; // Replace with actual ID
         PersonDto originalPersonDto = new PersonDto(1,"John", "Doe", "johndoe@mail.com", "1234567890", "123456789");
         PersonDto updatedPersonDto = new PersonDto(1,"John", "Updated Doe", "updated.doe@mail.com", "9876543210", "9876543210"); // New document number
-
         // Mock repository behavior
         when(personRepository.findById(id)).thenReturn(Optional.of(MapperUtil.map(originalPersonDto, Person.class)));
         // No existing person found with the new document number
         when(personRepository.findByDocumentNumber(updatedPersonDto.getDocumentNumber())).thenReturn(Optional.empty());
-
         // Call the service method
         PersonDto savedPersonDto = personService.update(id, updatedPersonDto);
-
         // Verify updated data
         assertEquals(updatedPersonDto.getFirstName(), savedPersonDto.getFirstName());
         assertEquals(updatedPersonDto.getLastName(), savedPersonDto.getLastName());
