@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class WorkshopDto implements Serializable {
 
-    private Long id;
+    private Integer id;
     private String name;
     private String code;
     private String description;
@@ -17,11 +17,11 @@ public class WorkshopDto implements Serializable {
     public WorkshopDto() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

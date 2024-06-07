@@ -125,4 +125,8 @@ public class UnitServiceImpl implements UnitService {
         unit.setOrganization(org);
         return unit;
     }
+    
+    public Unit getUnitEntityById(Integer unitId){
+        return unitRepository.findById(unitId).orElseThrow(()-> new NotFoundException("Not found Unit with id:" + unitId));
+    }
 }

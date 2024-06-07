@@ -114,4 +114,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshop.setOrganization(org);
         return workshop;
     }
+    public Workshop getWorkshopEntityById(Integer id){
+        return workshopRepository.findById(id).orElseThrow(()-> new NotFoundException("Not found Workshop with id:" + id));
+    }
 }

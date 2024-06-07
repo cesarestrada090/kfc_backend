@@ -12,5 +12,6 @@ public interface UnitService {
     UnitDto update(Integer id, UnitDto dto);
     ResultPageWrapper<UnitDto> findByOrganizationId(Integer orgId, Pageable paging);
     Unit getUnitEntityByDto(UnitDto unitDto);
+    Unit getUnitEntityById(Integer id);
     UnitDto getById(Integer id);
 }

@@ -13,5 +13,6 @@ public interface WorkshopService {
     WorkshopDto update(Integer id, WorkshopDto dto);
     ResultPageWrapper<WorkshopDto> findByOrganizationId(Integer orgId, Pageable paging);
     Workshop getWorkshopEntityByDto(WorkshopDto workshopDto, Organization org);
+    Workshop getWorkshopEntityById(Integer id);
     WorkshopDto getById(Integer id);
 }
