@@ -60,17 +60,14 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             throw new NotFoundException("Maintenance not found with id: " + id);
         }
         Maintenance maintenance = maintenanceOpt.get();
-        Unit unit = unitService.getUnitEntityById(dto.getUnit().getId());
-        Workshop workshop = workshopService.getWorkshopEntityById(dto.getWorkshop().getId());
         User user = userService.getUserEntityById(dto.getCreatedBy().getId());
-        maintenance.setUnit(unit);
-        maintenance.setWorkshop(workshop);
-        maintenance.setLastUpdatedBy(user);
-        maintenance.setLastUpdatedBy(user);
         maintenance.setDescription(dto.getDescription());
+        maintenance.setMaintenanceDate(dto.getMaintenanceDate());
         maintenance.setCompleted(dto.isCompleted());
         maintenance.setUpdatedAt(LocalDateTime.now());
         maintenance.setCreatedAt(LocalDateTime.now());
+        maintenance.setLastUpdatedBy(user);
+        maintenance.setCreatedBy(user);
         maintenance = maintenanceRepository.save(maintenance);
         return MapperUtil.map(maintenance, MaintenanceDto.class);
     }
