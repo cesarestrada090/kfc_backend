@@ -4,7 +4,6 @@ import com.kfc.app.dto.*;
 import com.kfc.app.entities.*;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.MaintenanceRepository;
-import com.kfc.app.repository.MaintenanceRepository;
 import com.kfc.app.service.*;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
@@ -37,18 +36,19 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     @Transactional
     public MaintenanceDto save(MaintenanceDto dto) {
-        Unit unit = unitService.getUnitEntityById(dto.getUnitDto().getId());
-        Workshop workshop = workshopService.getWorkshopEntityById(dto.getWorkshopDto().getId());
+        Unit unit = unitService.getUnitEntityById(dto.getUnit().getId());
+        Workshop workshop = workshopService.getWorkshopEntityById(dto.getWorkshop().getId());
         User user = userService.getUserEntityById(dto.getCreatedBy().getId());
         Maintenance maintenance = new Maintenance();
         maintenance.setUnit(unit);
         maintenance.setWorkshop(workshop);
         maintenance.setDescription(dto.getDescription());
+        maintenance.setMaintenanceDate(dto.getMaintenanceDate());
         maintenance.setCompleted(dto.isCompleted());
         maintenance.setUpdatedAt(LocalDateTime.now());
         maintenance.setCreatedAt(LocalDateTime.now());
         maintenance.setLastUpdatedBy(user);
-        maintenance.setLastUpdatedBy(user);
+        maintenance.setCreatedBy(user);
         maintenance = maintenanceRepository.save(maintenance);
         return MapperUtil.map(maintenance, MaintenanceDto.class);
     }
@@ -60,8 +60,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             throw new NotFoundException("Maintenance not found with id: " + id);
         }
         Maintenance maintenance = maintenanceOpt.get();
-        Unit unit = unitService.getUnitEntityById(dto.getUnitDto().getId());
-        Workshop workshop = workshopService.getWorkshopEntityById(dto.getWorkshopDto().getId());
+        Unit unit = unitService.getUnitEntityById(dto.getUnit().getId());
+        Workshop workshop = workshopService.getWorkshopEntityById(dto.getWorkshop().getId());
         User user = userService.getUserEntityById(dto.getCreatedBy().getId());
         maintenance.setUnit(unit);
         maintenance.setWorkshop(workshop);

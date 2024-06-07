@@ -1,13 +1,15 @@
 package com.kfc.app.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class MaintenanceDto implements Serializable {
-    private Integer id;  
-    private Integer unitId;
-    private UnitDto unitDto;
-    private WorkshopDto workshopDto;
+    private Integer id;
+    private UnitDto unit;
+    private WorkshopDto workshop;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime maintenanceDate;
     private String description;
     private boolean completed;
@@ -24,28 +26,20 @@ public class MaintenanceDto implements Serializable {
         this.id = id;
     }
 
-    public Integer getUnitId() {
-        return unitId;
+    public UnitDto getUnit() {
+        return unit;
     }
 
-    public void setUnitId(Integer unitId) {
-        this.unitId = unitId;
+    public void setUnit(UnitDto unit) {
+        this.unit = unit;
     }
 
-    public UnitDto getUnitDto() {
-        return unitDto;
+    public WorkshopDto getWorkshop() {
+        return workshop;
     }
 
-    public void setUnitDto(UnitDto unitDto) {
-        this.unitDto = unitDto;
-    }
-
-    public WorkshopDto getWorkshopDto() {
-        return workshopDto;
-    }
-
-    public void setWorkshopDto(WorkshopDto workshopDto) {
-        this.workshopDto = workshopDto;
+    public void setWorkshop(WorkshopDto workshop) {
+        this.workshop = workshop;
     }
 
     public LocalDateTime getMaintenanceDate() {
