@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUsernameAndPassword(String username, String password);
 
-    @Query("SELECT m " +
+    @Query("SELECT u " +
             "FROM User u " +
             "JOIN Person p on u.person.id=p.id " +
             "WHERE p.documentNumber = :documentNumber AND u.organization.id = :orgId")
