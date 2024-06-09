@@ -71,8 +71,8 @@ public class UserServiceImpl implements UserService {
         PersonDto personDto = userDto.getPerson();
         Person personEntity = personService.getPersonEntityById(personDto.getId());
         if (personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber())) {
-            if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
-                throw new DuplicatedException("Username duplicated for " + personDto.getDocumentNumber());
+            if(userRepository.findByDocumentNumberAndOrganizationId(userDto.getOrganization().getId(), personDto.getDocumentNumber()) != null){
+                throw new DuplicatedException("Username duplicated for " + personDto.getDocumentNumber() + " And OrgID: "+ userDto.getOrganization().getId());
             }
         }
         
