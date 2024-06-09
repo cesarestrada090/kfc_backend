@@ -42,8 +42,8 @@ public class MechanicServiceImpl implements MechanicService {
     @Transactional
     public MechanicDto save(MechanicDto mechanicDTO) {
         PersonDto personDto = mechanicDTO.getPerson();
-        if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
-            throw new DuplicatedException("Document number already exists: " + personDto.getDocumentNumber());
+        if(mechanicRepository.findByDocumentNumberAndOrganizationId(personDto.getDocumentNumber(), mechanicDTO.getOrganization().getId()) != null){
+            throw new DuplicatedException("Document number already exists: " + personDto.getDocumentNumber() + " and org id: "+ mechanicDTO.getOrganization().getId());
         }
         if(orgService.rucAlreadyExists(mechanicDTO.getOrganization().getRuc())){
             throw new DuplicatedException("RUC already exists: " + mechanicDTO.getOrganization().getRuc());
@@ -76,8 +76,8 @@ public class MechanicServiceImpl implements MechanicService {
         if(mechanicDTO.getPerson() != null && mechanicDTO.getPerson().getDocumentNumber() != null){
             PersonDto personDto = mechanicDTO.getPerson();
             if(personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber())){
-                if(personService.findByDocumentNumber(personDto.getDocumentNumber()) != null){
-                    throw new DuplicatedException("Document Number duplicated for " + personDto.getDocumentNumber());
+                if(mechanicRepository.findByDocumentNumberAndOrganizationId(personDto.getDocumentNumber(), mechanicDTO.getOrganization().getId()) != null){
+                    throw new DuplicatedException("Document number already exists: " + personDto.getDocumentNumber() + " and org id: "+ mechanicDTO.getOrganization().getId());
                 }
                 personEntity.setDocumentNumber(personDto.getDocumentNumber());
             }

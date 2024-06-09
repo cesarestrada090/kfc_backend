@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto save(UserDto userDto) {
-        if (this.usernameAlreadyExists(userDto.getUsername())){
+        if (this.usernameAlreadyExistsByOrgId(userDto.getUsername(), userDto.getOrganization().getId())){
             throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
         }
         Person personEntity = personService.getOrCreatePersonEntity(userDto.getPerson());
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         // validate different username
         User userEntity = this.getUserEntityById(id);
         if (userDto.hasDifferentUserName(userEntity.getUsername())) {
-            if(usernameAlreadyExists(userDto.getUsername())){
+            if(usernameAlreadyExistsByOrgId(userDto.getUsername(), userDto.getOrganization().getId())){
                 throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
             }
         }
@@ -124,9 +124,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean usernameAlreadyExists(String username) {
+    public Boolean usernameAlreadyExistsByOrgId(String username, Integer orgId) {
         Optional<User> user = userRepository.
-                findByUsername(username);
+                findByUsernameAndOrganizationId(username, orgId);
         return user.isPresent();
     }
 
@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
         // If user does not have id, we should create new Person
         if(userDto.getId() == null){
             // Check if the new user have an existing username
-            if(this.usernameAlreadyExists(userDto.getUsername())){
+            if(this.usernameAlreadyExistsByOrgId(userDto.getUsername(), userDto.getOrganization().getId())){
                 throw new DuplicatedException("Username duplicated for " + userDto.getUsername());
             }
             user = this.createUserEntityByDto(userDto, person, organization);
