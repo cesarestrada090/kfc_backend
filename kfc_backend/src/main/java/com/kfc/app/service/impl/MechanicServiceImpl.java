@@ -40,24 +40,21 @@ public class MechanicServiceImpl implements MechanicService {
 
     @Override
     @Transactional
-    public MechanicDto save(MechanicDto mechanicDTO) {
-        PersonDto personDto = mechanicDTO.getPerson();
-        if(mechanicRepository.findByDocumentNumberAndOrganizationId(personDto.getDocumentNumber(), mechanicDTO.getOrganization().getId()) != null){
-            throw new DuplicatedException("Document number already exists: " + personDto.getDocumentNumber() + " and org id: "+ mechanicDTO.getOrganization().getId());
-        }
-        if(orgService.rucAlreadyExists(mechanicDTO.getOrganization().getRuc())){
-            throw new DuplicatedException("RUC already exists: " + mechanicDTO.getOrganization().getRuc());
+    public MechanicDto save(MechanicDto mechanicDto) {
+        PersonDto personDto = mechanicDto.getPerson();
+        if(mechanicRepository.findByDocumentNumberAndOrganizationId(mechanicDto.getOrganization().getId(), personDto.getDocumentNumber()) != null){
+            throw new DuplicatedException("Document number already exists: " + personDto.getDocumentNumber() + " and org id: "+ mechanicDto.getOrganization().getId());
         }
         
-        Organization organization = orgService.getOrCreateOrgEntity(mechanicDTO.getOrganization());
+        Organization organization = orgService.getOrCreateOrgEntity(mechanicDto.getOrganization());
         Person person = personService.getOrCreatePersonEntity(personDto);
         
         // Save mechanic
         Mechanic mechanic = new Mechanic();
-        mechanic.setLicenceCode(mechanicDTO.getLicenceCode());
-        mechanic.setSpecialization(mechanicDTO.getSpecialization());
-        mechanic.setNotes(mechanicDTO.getNotes());
-        mechanic.setStatus(mechanicDTO.isStatus());
+        mechanic.setLicenceCode(mechanicDto.getLicenceCode());
+        mechanic.setSpecialization(mechanicDto.getSpecialization());
+        mechanic.setNotes(mechanicDto.getNotes());
+        mechanic.setStatus(mechanicDto.isStatus());
         mechanic.setCreatedAt(LocalDateTime.now());
         mechanic.setUpdatedAt(LocalDateTime.now());
         mechanic.setPerson(person);
@@ -76,7 +73,7 @@ public class MechanicServiceImpl implements MechanicService {
         if(mechanicDTO.getPerson() != null && mechanicDTO.getPerson().getDocumentNumber() != null){
             PersonDto personDto = mechanicDTO.getPerson();
             if(personDto.hasDifferentDocumentNumber(personEntity.getDocumentNumber())){
-                if(mechanicRepository.findByDocumentNumberAndOrganizationId(personDto.getDocumentNumber(), mechanicDTO.getOrganization().getId()) != null){
+                if(mechanicRepository.findByDocumentNumberAndOrganizationId(mechanicDTO.getOrganization().getId(), personDto.getDocumentNumber()) != null){
                     throw new DuplicatedException("Document number already exists: " + personDto.getDocumentNumber() + " and org id: "+ mechanicDTO.getOrganization().getId());
                 }
                 personEntity.setDocumentNumber(personDto.getDocumentNumber());

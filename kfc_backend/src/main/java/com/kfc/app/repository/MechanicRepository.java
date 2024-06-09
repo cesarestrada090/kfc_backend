@@ -20,5 +20,5 @@ public interface MechanicRepository extends JpaRepository<Mechanic, Integer> {
             "FROM Mechanic m " +
             "JOIN Person p on m.person.id=p.id " +
             "WHERE p.documentNumber = :documentNumber AND m.organization.id = :orgId")
-    MechanicDto findByDocumentNumberAndOrganizationId(@Param("orgId")String orgId, @Param("documentNumber")Integer documentNumber);
+    MechanicDto findByDocumentNumberAndOrganizationId(@Param("orgId")Integer orgId, @Param("documentNumber")String documentNumber);
 }
