@@ -19,6 +19,9 @@ public class User {
     @Column(name = "username", length = 45)
     private String username;
 
+    @Column(name = "type", nullable = false)
+    private Integer type;
+
     @Size(max = 45)
     @Column(name = "password", length = 45)
     private String password;
@@ -91,5 +94,13 @@ public class User {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

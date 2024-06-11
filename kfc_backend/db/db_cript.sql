@@ -28,6 +28,7 @@ CREATE TABLE user (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   person_id INT,
+  type INT,
   organization_id INT,
   FOREIGN KEY (person_id) REFERENCES person(id),
   FOREIGN KEY (organization_id) REFERENCES organization(id)

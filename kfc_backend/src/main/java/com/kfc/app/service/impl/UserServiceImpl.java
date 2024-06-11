@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setPerson(personEntity);
         userEntity.setOrganization(orgEntity);
         userEntity.setUsername(userDto.getUsername());
+        userEntity.setType(userDto.getType());
         userEntity.setPassword(userDto.getPassword());
         userEntity.setUpdatedAt(LocalDateTime.now());
         
@@ -172,6 +173,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
+        user.setType(userDto.getType());
         user.setOrganization(organization);
         user.setPerson(person);
         user.setUpdatedAt(LocalDateTime.now());

@@ -14,6 +14,7 @@ public class UserDto implements Serializable {
     private Integer id;
     @Size(max = 45)
     private String username;
+    private Integer type;
     @Size(max = 45)
     private String password;
     private LocalDateTime createdAt;
@@ -99,5 +100,13 @@ public class UserDto implements Serializable {
 
     public void setOrganization(OrganizationDto organization) {
         this.organization = organization;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }
