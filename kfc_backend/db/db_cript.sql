@@ -112,11 +112,49 @@ CREATE TABLE maintenance_detail (
 
 CREATE TABLE brand (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL
+  name VARCHAR(255) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by INT,
+  updated_by INT,
+  FOREIGN KEY (created_by) REFERENCES user(id),
+  FOREIGN KEY (updated_by) REFERENCES user(id)
 );
 
 CREATE TABLE product_type (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  category VARCHAR(255)
+  category VARCHAR(255),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by INT,
+  updated_by INT,
+  FOREIGN KEY (created_by) REFERENCES user(id),
+  FOREIGN KEY (updated_by) REFERENCES user(id)
+);
+
+CREATE TABLE product (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_code VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(255),
+  warranty VARCHAR(255),
+  weight DECIMAL,
+  dimensions VARCHAR(255),
+  serial_number VARCHAR(255),
+  bar_code VARCHAR(255),
+  expiration_time INT,
+  brand_id INT NOT NULL,
+  product_type_id INT NOT NULL,
+  organization_id INT NULL,
+  manufacturing_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by INT,
+  updated_by INT,
+  FOREIGN KEY (brand_id) REFERENCES brand(id),
+  FOREIGN KEY (organization_id) REFERENCES organization(id),
+  FOREIGN KEY (product_type_id) REFERENCES product_type(id),
+  FOREIGN KEY (created_by) REFERENCES user(id),
+  FOREIGN KEY (updated_by) REFERENCES user(id)
 );
