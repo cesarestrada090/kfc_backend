@@ -1,9 +1,9 @@
 package com.kfc.app.controller;
 
-import com.kfc.app.dto.BrandDto;
+import com.kfc.app.dto.MaintenanceDto;
+import com.kfc.app.dto.MechanicDto;
 import com.kfc.app.dto.ProductDto;
 import com.kfc.app.dto.ResultPageWrapper;
-import com.kfc.app.service.BrandService;
 import com.kfc.app.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +22,14 @@ import java.util.logging.Logger;
 public class ProductController extends AbstractController {
 
     private final ProductService productService;
-    private static final Logger log = Logger.getLogger(BrandController.class.getName());
+    private static final Logger log = Logger.getLogger(ProductController.class.getName());
 
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDto> save(@Valid @RequestBody ProductDto productDto){
         productDto = productService.save(productDto);
         return new ResponseEntity<>(productDto, HttpStatus.CREATED);
@@ -41,9 +41,19 @@ public class ProductController extends AbstractController {
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
+    @GetMapping(value="/organization/{organizationId}")
+    public ResponseEntity<Map<String,Object>> getAllByOrgId(@PathVariable(value = "organizationId") int organizationId,
+                                                            @RequestParam(defaultValue = "1") int page,
+                                                            @RequestParam(defaultValue = "20") int size){
+        Pageable paging = PageRequest.of(page-1, size);
+        ResultPageWrapper<ProductDto> resultPageWrapper = productService.findByOrganizationId(organizationId, paging);
+        Map<String, Object> response = prepareResponse(resultPageWrapper);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 //    @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<BrandDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody BrandDto brandDto){
-//        brandDto = brandService.update(id, brandDto);
+//    public ResponseEntity<ProductDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody ProductDto brandDto){
+//        brandDto = productService.update(id, brandDto);
 //        return new ResponseEntity<>(brandDto, HttpStatus.OK);
 //    }
 

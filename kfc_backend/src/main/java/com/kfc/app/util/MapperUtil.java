@@ -16,6 +16,7 @@ public class MapperUtil {
      */
     static {
         modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
     /**

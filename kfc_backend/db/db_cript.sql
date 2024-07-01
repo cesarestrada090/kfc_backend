@@ -108,7 +108,8 @@ CREATE TABLE maintenance_detail (
   quantity INT NOT NULL,
   description VARCHAR(255) NOT NULL,
   FOREIGN KEY (maintenance_id) REFERENCES maintenance(id)
-  -- FOREIGN KEY (product_id) REFERENCES product(id) -- 
+  -- FOREIGN KEY (product_id) REFERENCES product(id) --
+);
 
 CREATE TABLE brand (
   id INT AUTO_INCREMENT PRIMARY KEY,

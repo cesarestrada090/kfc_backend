@@ -1,6 +1,7 @@
 package com.kfc.app.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kfc.app.entities.Organization;
 import com.kfc.app.entities.Product;
 
 import java.io.Serializable;
@@ -30,6 +31,25 @@ public class ProductDto implements Serializable {
     private UserDto createdBy;
     private UserDto updatedBy;
 
+
+    public ProductDto() {
+    }
+
+    public ProductDto(Product product) {
+        this.id = product.getId();
+        this.productCode = product.getProductCode();
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.warranty = product.getWarranty();
+        this.weight = product.getWeight();
+        this.dimensions = product.getDimensions();
+        this.serialNumber = product.getSerialNumber();
+        this.barCode = product.getBarCode();
+        this.expirationTime = product.getExpirationTime();
+        this.manufacturingDate = product.getManufacturingDate();
+        this.createdAt = product.getCreatedAt();
+        this.updatedAt = product.getUpdatedAt();
+    }
 
     public Integer getId() {
         return id;

@@ -1,15 +1,23 @@
 package com.kfc.app.service.impl;
 
-import com.kfc.app.dto.*;
-import com.kfc.app.entities.*;
+import com.kfc.app.dto.ProductDto;
+import com.kfc.app.dto.ResultPageWrapper;
+import com.kfc.app.entities.Product;
+import com.kfc.app.entities.User;
+import com.kfc.app.entities.Brand;
+import com.kfc.app.entities.ProductType;
+import com.kfc.app.entities.Organization;
 import com.kfc.app.exception.DuplicatedException;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.OrganizationRepository;
 import com.kfc.app.repository.ProductRepository;
-import com.kfc.app.service.*;
+import com.kfc.app.service.UserService;
+import com.kfc.app.service.BrandService;
+import com.kfc.app.service.ProductTypeService;
+import com.kfc.app.service.OrgService;
+import com.kfc.app.service.ProductService;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +36,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductTypeService productTypeService;
     private final OrgService orgService;
 
-    @Autowired
     public ProductServiceImpl(ProductRepository productRepository,
                               OrganizationRepository orgRepository,
                               UserService userService,
@@ -53,24 +60,16 @@ public class ProductServiceImpl implements ProductService {
         if (this.nameAlreadyExists(productDto)) {
             throw new DuplicatedException("Product name duplicated for " + productDto.getName());
         }
-        Product productEntity = MapperUtil.map(productDto, Product.class);
-        productEntity.setProductCode(productDto.getProductCode());
-        productEntity.setName(productDto.getName());
-        productEntity.setDescription(productDto.getDescription());
-        productEntity.setWarranty(productDto.getWarranty());
-        productEntity.setWeight(productDto.getWeight());
-        productEntity.setDimensions(productDto.getDimensions());
-        productEntity.setSerialNumber(productDto.getSerialNumber());
-        productEntity.setBarCode(productDto.getBarCode());
-        productEntity.setExpirationTime(productDto.getExpirationTime());
-        productEntity.setBrand(brand);
-        productEntity.setProductType(productType);
-        productEntity.setOrganization(organization);
-        productEntity.setManufacturingDate(productDto.getManufacturingDate());
-        productEntity.setCreatedAt(LocalDateTime.now());
-        productEntity.setCreatedBy(user);
-        productEntity = productRepository.save(productEntity);
-        return MapperUtil.map(productEntity, ProductDto.class);
+        Product product = MapperUtil.map(productDto, Product.class);
+        product.setBrand(brand);
+        product.setProductType(productType);
+        product.setOrganization(organization);
+        product.setCreatedAt(LocalDateTime.now());
+        product.setUpdatedAt(LocalDateTime.now());
+        product.setCreatedBy(user);
+        product.setUpdatedBy(user);
+        product = productRepository.save(product);
+        return MapperUtil.map(product, ProductDto.class);
     }
 
     @Override
@@ -91,11 +90,14 @@ public class ProductServiceImpl implements ProductService {
         return PaginationUtil.prepareResultWrapper(productList, ProductDto.class);
     }
 
-//    @Override
-//    public ProductDto findByNameInOrganization(String productname, ){
-//        Optional<Product> product = productRepository.findByDocumentNumber(documentNumber);
-//        return person.map(value -> MapperUtil.map(value, PersonDto.class)).orElse(null);
-//    }
+    @Override
+    public ResultPageWrapper<ProductDto> findByOrganizationId(Integer orgId, Pageable paging) {
+        Page<Product> products = productRepository.findByOrganizationId(orgId, paging);
+        if(products.isEmpty()){
+            throw new NotFoundException("There are not products for this organization.");
+        }
+        return PaginationUtil.prepareResultWrapper(products, ProductDto.class);
+    }
 
     @Override
     public Boolean nameAlreadyExists(ProductDto productDto) {
