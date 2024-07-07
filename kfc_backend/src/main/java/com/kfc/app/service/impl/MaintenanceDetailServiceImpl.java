@@ -23,11 +23,14 @@ public class MaintenanceDetailServiceImpl implements MaintenanceDetailService {
     
     private final MaintenanceRepository maintenanceRepository;
     private final MaintenanceDetailRepository maintenanceDetailRepository;
+    private final ProductService productService;
 
     public MaintenanceDetailServiceImpl(MaintenanceRepository maintenanceRepository,
-                                        MaintenanceDetailRepository maintenanceDetailRepository) {
+                                        MaintenanceDetailRepository maintenanceDetailRepository,
+                                        ProductService productService) {
         this.maintenanceRepository = maintenanceRepository;
         this.maintenanceDetailRepository = maintenanceDetailRepository;
+        this.productService = productService;
     }
 
     @Override
@@ -36,6 +39,8 @@ public class MaintenanceDetailServiceImpl implements MaintenanceDetailService {
         MaintenanceDetail maintenanceDetail = new MaintenanceDetail();
         maintenanceDetail.setQuantity(dto.getQuantity());
         maintenanceDetail.setDescription(dto.getDescription());
+        Product product = productService.getProductEntityById(dto.getProductId());
+        maintenanceDetail.setProduct(product);
         maintenanceDetail = maintenanceDetailRepository.save(maintenanceDetail);
         return MapperUtil.map(maintenanceDetail, MaintenanceDetailDto.class);
     }

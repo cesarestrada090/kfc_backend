@@ -25,18 +25,22 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     private final MaintenanceDetailRepository maintenanceDetailRepository;
     private final UnitService unitService;
     private final UserService userService;
+    
+    private final ProductService productService;
     private final WorkshopService workshopService;
 
     public MaintenanceServiceImpl(MaintenanceRepository maintenanceRepository,
                                   MaintenanceDetailRepository maintenanceDetailRepository,
                                   WorkshopService workshopService,
                                   UnitService unitService,
-                                  UserService userService) {
+                                  UserService userService,
+                                  ProductService productService) {
         this.maintenanceRepository = maintenanceRepository;
         this.maintenanceDetailRepository = maintenanceDetailRepository;
         this.workshopService = workshopService;
         this.unitService = unitService;
         this.userService = userService;
+        this.productService = productService;
     }
 
     @Override
@@ -55,28 +59,24 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         maintenance.setCreatedAt(LocalDateTime.now());
         maintenance.setLastUpdatedBy(user);
         maintenance.setCreatedBy(user);
-        maintenance = maintenanceRepository.save(maintenance);
-        saveMaintenanceDetail(dto, maintenance.getId());
+        List<MaintenanceDetail> maintenanceDetails = new ArrayList<>();
+        for (int i = 0 ; i < dto.getMaintenanceDetails().size(); i++ ){
+            MaintenanceDetailDto detailDto = dto.getMaintenanceDetails().get(i);
+            MaintenanceDetail maintenanceDetail = new MaintenanceDetail();
+            maintenanceDetail.setQuantity(detailDto.getQuantity());
+            maintenanceDetail.setDescription(detailDto.getDescription());
+            // Product
+            Product product = productService.getProductEntityById(detailDto.getProductId());
+            maintenanceDetail.setProduct(product);
+            maintenanceDetail.setMaintenance(maintenance);
+            maintenanceDetails.add(maintenanceDetail);
+        }
+        if (!maintenanceDetails.isEmpty()){
+            maintenanceDetailRepository.saveAll(maintenanceDetails);
+        }
         return MapperUtil.map(maintenance, MaintenanceDto.class);
     }
-
-    private void saveMaintenanceDetail(MaintenanceDto dto, Integer maintenanceId) {
-        if (dto.getMaintenanceDetails().isEmpty()) {
-            return;
-        }
-        List<MaintenanceDetail> maintenanceDetailList = new ArrayList<>();
-        for (MaintenanceDetailDto detailDto : dto.getMaintenanceDetails()) {
-            MaintenanceDetail detail = new MaintenanceDetail();
-            detail.setMaintenanceId(maintenanceId);  // Set the saved maintenance ID
-            detail.setQuantity(detailDto.getQuantity());
-            detail.setDescription(detailDto.getDescription());
-            maintenanceDetailList.add(detail);
-        }
-        if (!maintenanceDetailList.isEmpty()){
-            maintenanceDetailRepository.saveAll(maintenanceDetailList);
-        }
-    }
-
+    
     @Override
     public MaintenanceDto update(Integer id, MaintenanceDto dto) {
         Optional<Maintenance> maintenanceOpt = maintenanceRepository.findById(id);

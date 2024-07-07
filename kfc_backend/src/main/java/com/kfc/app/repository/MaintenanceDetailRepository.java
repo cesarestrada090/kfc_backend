@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface MaintenanceDetailRepository extends JpaRepository<MaintenanceDetail, Integer> {
-    Page<Maintenance> findByMaintenanceId(@Param("maintenanceId")Integer maintenanceId, Pageable paging);
+    Page<MaintenanceDetail> findByMaintenanceId(@Param("maintenanceId")Integer maintenanceId, Pageable paging);
 }

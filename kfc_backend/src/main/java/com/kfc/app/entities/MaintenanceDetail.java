@@ -20,7 +20,13 @@ public class MaintenanceDetail {
 
     @Column(nullable = false)
     private String description;
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "maintenance_id", nullable = false, insertable = false, updatable = false)
+    private Maintenance maintenance; // This field is not included in the database but allows for relationship access
     public Integer getId() {
         return id;
     }
@@ -59,5 +65,13 @@ public class MaintenanceDetail {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

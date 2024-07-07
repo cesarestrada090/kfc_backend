@@ -105,5 +105,9 @@ public class ProductServiceImpl implements ProductService {
                 findByNameAndOrganizationId(productDto.getName(), productDto.getOrganization().getId());
         return product.isPresent();
     }
+    
+    public Product getProductEntityById(Integer productId){
+        return productRepository.findById(productId).orElseThrow(()-> new NotFoundException("Not found Product with id:" + productId));
+    }
 
 }
