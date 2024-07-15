@@ -40,7 +40,7 @@ public class MaintenanceDetailServiceImpl implements MaintenanceDetailService {
         maintenanceDetail.setQuantity(dto.getQuantity());
         maintenanceDetail.setDescription(dto.getDescription());
         Product product = productService.getProductEntityById(dto.getProductId());
-        maintenanceDetail.setProduct(product);
+        //maintenanceDetail.setProduct(product);
         maintenanceDetail = maintenanceDetailRepository.save(maintenanceDetail);
         return MapperUtil.map(maintenanceDetail, MaintenanceDetailDto.class);
     }

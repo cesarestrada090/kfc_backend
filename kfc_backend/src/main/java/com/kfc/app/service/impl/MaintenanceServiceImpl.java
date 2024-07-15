@@ -67,7 +67,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             maintenanceDetail.setDescription(detailDto.getDescription());
             // Product
             Product product = productService.getProductEntityById(detailDto.getProductId());
-            maintenanceDetail.setProduct(product);
+            //maintenanceDetail.setProduct(product);
             maintenanceDetail.setMaintenance(maintenance);
             maintenanceDetails.add(maintenanceDetail);
         }
