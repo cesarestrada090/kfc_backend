@@ -19,4 +19,6 @@ public interface ProductService {
     
     Product getProductEntityById(Integer id);
 
+    ProductDto update(Integer id, ProductDto dto);
+
 }

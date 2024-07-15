@@ -2,11 +2,7 @@ package com.kfc.app.service.impl;
 
 import com.kfc.app.dto.ProductDto;
 import com.kfc.app.dto.ResultPageWrapper;
-import com.kfc.app.entities.Product;
-import com.kfc.app.entities.User;
-import com.kfc.app.entities.Brand;
-import com.kfc.app.entities.ProductType;
-import com.kfc.app.entities.Organization;
+import com.kfc.app.entities.*;
 import com.kfc.app.exception.DuplicatedException;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.OrganizationRepository;
@@ -68,6 +64,39 @@ public class ProductServiceImpl implements ProductService {
         product.setUpdatedAt(LocalDateTime.now());
         product.setCreatedBy(user);
         product.setUpdatedBy(user);
+        product = productRepository.save(product);
+        return MapperUtil.map(product, ProductDto.class);
+    }
+
+    @Override
+    @Transactional
+    public ProductDto update(Integer id, ProductDto productDto){
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isEmpty()) {
+            throw new NotFoundException("Product not found with id: " + id);
+        }
+        Product product = productOpt.get();
+        User user = userService.getUserEntityById(productDto.getCreatedBy().getId());
+        Brand brand = brandService.getBrandEntityById(productDto.getBrand().getId());
+        ProductType productType = productTypeService.getProductTypeEntityById(productDto.getProductType().getId());
+        Organization organization = orgService.getOrgEntityById(productDto.getOrganization().getId());
+        product.setBrand(brand);
+        product.setOrganization(organization);
+        product.setProductType(productType);
+
+        product.setWeight(productDto.getWeight());
+        product.setProductCode(productDto.getProductCode());
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setUpdatedAt(LocalDateTime.now());
+        product.setUpdatedBy(user);
+        product.setManufacturingDate(productDto.getManufacturingDate());
+        product.setExpirationTime(productDto.getExpirationTime());
+        product.setName(productDto.getName());
+        product.setSerialNumber(productDto.getSerialNumber());
+        product.setDimensions(productDto.getDimensions());
+        product.setWarranty(productDto.getWarranty());
+        product.setBarCode(productDto.getBarCode());
         product = productRepository.save(product);
         return MapperUtil.map(product, ProductDto.class);
     }

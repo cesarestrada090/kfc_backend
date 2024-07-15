@@ -159,3 +159,56 @@ CREATE TABLE product (
   FOREIGN KEY (created_by) REFERENCES user(id),
   FOREIGN KEY (updated_by) REFERENCES user(id)
 );
+
+CREATE TABLE supplier (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  supplier_code VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(255),
+  contact VARCHAR(255),
+  position_contact VARCHAR(255),
+  postal_code VARCHAR(10),
+  address VARCHAR(255),
+  province VARCHAR(50),
+  city VARCHAR(50),
+  country VARCHAR(50),
+  telephone VARCHAR(100),
+  fax VARCHAR(100),
+  email VARCHAR(100),
+  homepage VARCHAR(100),
+  notes VARCHAR(100),
+  organization_id INT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by INT,
+  updated_by INT,
+  FOREIGN KEY (organization_id) REFERENCES organization(id),
+  FOREIGN KEY (created_by) REFERENCES user(id),
+  FOREIGN KEY (updated_by) REFERENCES user(id)
+);
+
+CREATE TABLE product_supplier (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_id INT NOT NULL,
+  supplier_id INT NOT NULL,
+  status BOOLEAN NOT NULL DEFAULT true,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by INT,
+  updated_by INT,
+  FOREIGN KEY (product_id) REFERENCES product(id),
+  FOREIGN KEY (supplier_id) REFERENCES supplier(id)
+);
+
+CREATE TABLE product_warehouse (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_supplier_id INT NOT NULL,
+  warehouse_id INT NOT NULL,
+  location VARCHAR(255),
+  stock VARCHAR(255),
+  status BOOLEAN NOT NULL DEFAULT true,
+  created_by INT,
+  updated_by INT,
+  FOREIGN KEY (product_supplier_id) REFERENCES product_supplier(id),
+  FOREIGN KEY (warehouse_id) REFERENCES warehouse(id)
+);
