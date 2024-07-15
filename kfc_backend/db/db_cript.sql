@@ -191,24 +191,36 @@ CREATE TABLE product_supplier (
   id INT AUTO_INCREMENT PRIMARY KEY,
   product_id INT NOT NULL,
   supplier_id INT NOT NULL,
+  organization_id INT NULL,
+  cost DECIMAL,
+  discount DECIMAL,
+  delivery_time INT,
+  payment_conditions VARCHAR(255),
   status BOOLEAN NOT NULL DEFAULT true,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created_by INT,
   updated_by INT,
+  FOREIGN KEY (organization_id) REFERENCES organization(id),
   FOREIGN KEY (product_id) REFERENCES product(id),
-  FOREIGN KEY (supplier_id) REFERENCES supplier(id)
+  FOREIGN KEY (supplier_id) REFERENCES supplier(id),
+  FOREIGN KEY (created_by) REFERENCES user(id),
+  FOREIGN KEY (updated_by) REFERENCES user(id)
 );
 
 CREATE TABLE product_warehouse (
   id INT AUTO_INCREMENT PRIMARY KEY,
   product_supplier_id INT NOT NULL,
   warehouse_id INT NOT NULL,
+  organization_id INT NULL,
   location VARCHAR(255),
   stock VARCHAR(255),
   status BOOLEAN NOT NULL DEFAULT true,
   created_by INT,
   updated_by INT,
   FOREIGN KEY (product_supplier_id) REFERENCES product_supplier(id),
-  FOREIGN KEY (warehouse_id) REFERENCES warehouse(id)
+  FOREIGN KEY (warehouse_id) REFERENCES warehouse(id),
+  FOREIGN KEY (organization_id) REFERENCES organization(id),
+  FOREIGN KEY (created_by) REFERENCES user(id),
+  FOREIGN KEY (updated_by) REFERENCES user(id)
 );

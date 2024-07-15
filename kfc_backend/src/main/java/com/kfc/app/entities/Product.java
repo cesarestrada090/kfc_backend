@@ -1,7 +1,15 @@
 package com.kfc.app.entities;
 
-import com.kfc.app.dto.UserDto;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;

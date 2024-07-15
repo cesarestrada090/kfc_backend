@@ -2,6 +2,7 @@ package com.kfc.app.service;
 
 import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.dto.SupplierDto;
+import com.kfc.app.entities.Supplier;
 import org.springframework.data.domain.Pageable;
 
 public interface SupplierService {
@@ -17,4 +18,5 @@ public interface SupplierService {
     Boolean nameAlreadyExists (SupplierDto supplierDto);
 
     SupplierDto update(Integer id, SupplierDto dto);
+    Supplier getSupplierEntityById(Integer id);
 }

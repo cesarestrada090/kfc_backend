@@ -86,6 +86,11 @@ public class SupplierServiceImpl implements SupplierService {
         return MapperUtil.map(supplier, SupplierDto.class);
     }
 
+    public Supplier getSupplierEntityById(Integer supplierId) {
+        Optional<Supplier> existingOrg = supplierRepository.findById(supplierId);
+        return existingOrg.orElseThrow(() -> new NotFoundException("Supplier not found with id: " + supplierId));
+    }
+
     @Override
     public SupplierDto getById(Integer id){
         Optional<Supplier> supplier = supplierRepository.findById(id);
