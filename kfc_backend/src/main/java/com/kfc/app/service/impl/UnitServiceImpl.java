@@ -66,13 +66,13 @@ public class UnitServiceImpl implements UnitService {
         // Update person
         PersonDto personDto = dto.getOrganization().getLegalRepresentation();
         if(personDto != null && personDto.getFirstName() != null) {
-            Person legalRepresentation = organization.getLegalRepresentationPerson();
+            Person legalRepresentation = organization.getLegalRepresentation();
             legalRepresentation.setFirstName(personDto.getFirstName());
             legalRepresentation.setLastName(personDto.getLastName());
             legalRepresentation.setEmail(personDto.getEmail());
             legalRepresentation.setPhoneNumber(personDto.getPhoneNumber());
             legalRepresentation.setDocumentNumber(personDto.getDocumentNumber());
-            organization.setLegalRepresentationPerson(legalRepresentation);
+            organization.setLegalRepresentation(legalRepresentation);
         }
         
         //update unit

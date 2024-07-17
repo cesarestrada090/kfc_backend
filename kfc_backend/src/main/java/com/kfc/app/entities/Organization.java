@@ -55,11 +55,11 @@ public class Organization {
         this.ruc = ruc;
     }
 
-    public Person getLegalRepresentationPerson() {
+    public Person getLegalRepresentation() {
         return legalRepresentationPerson;
     }
 
-    public void setLegalRepresentationPerson(Person legalRepresentationPerson) {
+    public void setLegalRepresentation(Person legalRepresentationPerson) {
         this.legalRepresentationPerson = legalRepresentationPerson;
     }
 

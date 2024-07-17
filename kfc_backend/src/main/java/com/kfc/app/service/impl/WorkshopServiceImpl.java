@@ -6,10 +6,7 @@ import com.kfc.app.entities.Person;
 import com.kfc.app.entities.Workshop;
 import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.WorkshopRepository;
-import com.kfc.app.repository.WorkshopRepository;
 import com.kfc.app.service.OrgService;
-import com.kfc.app.service.PersonService;
-import com.kfc.app.service.UserService;
 import com.kfc.app.service.WorkshopService;
 import com.kfc.app.util.MapperUtil;
 import com.kfc.app.util.PaginationUtil;
@@ -64,13 +61,13 @@ public class WorkshopServiceImpl implements WorkshopService {
         // Update person
         PersonDto personDto = dto.getOrganization().getLegalRepresentation();
         if(personDto != null && personDto.getFirstName() != null) {
-            Person legalRepresentation = organization.getLegalRepresentationPerson();
+            Person legalRepresentation = organization.getLegalRepresentation();
             legalRepresentation.setFirstName(personDto.getFirstName());
             legalRepresentation.setLastName(personDto.getLastName());
             legalRepresentation.setEmail(personDto.getEmail());
             legalRepresentation.setPhoneNumber(personDto.getPhoneNumber());
             legalRepresentation.setDocumentNumber(personDto.getDocumentNumber());
-            organization.setLegalRepresentationPerson(legalRepresentation);
+            organization.setLegalRepresentation(legalRepresentation);
         }
         
         //update workshop
