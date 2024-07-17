@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.CascadeType;
@@ -130,7 +129,7 @@ public class ProductSupplier {
         this.paymentConditions = paymentConditions;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 

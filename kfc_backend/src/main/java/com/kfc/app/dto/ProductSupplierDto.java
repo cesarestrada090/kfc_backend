@@ -33,6 +33,7 @@ public class ProductSupplierDto implements Serializable {
         this.discount = productSupplier.getDiscount();
         this.deliveryTime = productSupplier.getDeliveryTime();
         this.paymentConditions = productSupplier.getPaymentConditions();
+        this.status = productSupplier.getStatus();
         this.createdAt = productSupplier.getCreatedAt();
         this.updatedAt = productSupplier.getUpdatedAt();
     }

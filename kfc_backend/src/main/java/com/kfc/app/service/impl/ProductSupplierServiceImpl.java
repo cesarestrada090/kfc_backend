@@ -1,18 +1,23 @@
 package com.kfc.app.service.impl;
 
+import com.kfc.app.dto.ProductDto;
 import com.kfc.app.dto.ProductSupplierDto;
+import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.*;
 import com.kfc.app.exception.DuplicatedException;
+import com.kfc.app.exception.NotFoundException;
 import com.kfc.app.repository.OrganizationRepository;
-import com.kfc.app.repository.ProductRepository;
 import com.kfc.app.repository.ProductSupplierRepository;
-import com.kfc.app.repository.SupplierRepository;
 import com.kfc.app.service.*;
 import com.kfc.app.util.MapperUtil;
+import com.kfc.app.util.PaginationUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class ProductSupplierServiceImpl implements ProductSupplierService {
@@ -45,9 +50,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         Organization organization = orgService.getOrgEntityById(productSupplierDto.getOrganization().getId());
         Supplier supplier = supplierService.getSupplierEntityById(productSupplierDto.getSupplier().getId());
         Product product = productService.getProductEntityById(productSupplierDto.getProduct().getId());
-//        if (this.nameAlreadyExists(productSupplierDto)) {
-//            throw new DuplicatedException("Product name duplicated for " + productSupplierDto.getName());
-//        }
+        if (this.getProductSupplier(productSupplierDto) != null) {
+            throw new DuplicatedException("Information duplicated for " + organization.getName());
+        }
         ProductSupplier productSupplier = MapperUtil.map(productSupplierDto, ProductSupplier.class);
         productSupplier.setOrganization(organization);
         productSupplier.setSupplier(supplier);
@@ -58,6 +63,43 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         productSupplier.setUpdatedBy(user);
         productSupplier = productSupplierRepository.save(productSupplier);
         return MapperUtil.map(productSupplier, ProductSupplierDto.class);
+    }
+
+    @Override
+    public ProductSupplier getProductSupplier(ProductSupplierDto productSupplierDto) {
+        Optional<ProductSupplier> productSupplier =
+                productSupplierRepository.findBySupplierIdAndProductIdAndOrganizationId(productSupplierDto.getSupplier().getId(),
+                        productSupplierDto.getProduct().getId(),
+                        productSupplierDto.getOrganization().getId());
+
+        return (productSupplier.isPresent()) ? productSupplier.get() : null;
+    }
+
+    @Override
+    public ProductSupplierDto getById(Integer id){
+        Optional<ProductSupplier> productSupplier = productSupplierRepository.findById(id);
+        if(productSupplier.isEmpty()){
+            throw new NotFoundException("Product Id does not exists: " + id);
+        }
+        return MapperUtil.map(productSupplier.get(), ProductSupplierDto.class);
+    }
+
+    @Override
+    public ResultPageWrapper<ProductSupplierDto> findByOrganizationId(Integer orgId, Pageable paging) {
+        Page<ProductSupplier> productSuppliers = productSupplierRepository.findByOrganizationId(orgId, paging);
+        if(productSuppliers.isEmpty()){
+            throw new NotFoundException("There are not products for this organization.");
+        }
+        return PaginationUtil.prepareResultWrapper(productSuppliers, ProductSupplierDto.class);
+    }
+
+    @Override
+    public ResultPageWrapper<ProductSupplierDto> findAllProductsBySupplierId(Integer orgId, Integer supplierId, Pageable paging) {
+        Page<ProductSupplier> productSuppliers = productSupplierRepository.findByOrganizationIdAndSupplierId(orgId, supplierId, paging);
+        if(productSuppliers.isEmpty()){
+            throw new NotFoundException("There are not products for this organization.");
+        }
+        return PaginationUtil.prepareResultWrapper(productSuppliers, ProductSupplierDto.class);
     }
 
 }

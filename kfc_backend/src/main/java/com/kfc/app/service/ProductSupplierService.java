@@ -9,13 +9,13 @@ public interface ProductSupplierService {
 
     ProductSupplierDto save(ProductSupplierDto productSupplierDto);
 
-//    ProductSupplierDto getById(Integer id);
-//
-//    ResultPageWrapper<ProductSupplierDto> findByOrganizationId(Integer userId, Pageable paging);
-//
-//    ResultPageWrapper<ProductSupplierDto> getAll(Pageable paging);
-//
-//    Boolean nameAlreadyExists (ProductSupplierDto productSupplierDto);
+    ProductSupplierDto getById(Integer id);
+
+    ResultPageWrapper<ProductSupplierDto> findByOrganizationId(Integer orgId, Pageable paging);
+
+    ResultPageWrapper<ProductSupplierDto> findAllProductsBySupplierId(Integer orgId, Integer supplierId, Pageable paging);
+
+    ProductSupplier getProductSupplier (ProductSupplierDto productSupplierDto);
 //
 //    ProductSupplier getProductEntityById(Integer id);
 //

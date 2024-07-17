@@ -20,6 +20,11 @@ public class MaintenanceDetail {
 
     @Column(nullable = false)
     private String description;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
     public Integer getId() {
         return id;
     }
