@@ -8,22 +8,19 @@ public class MaintenanceDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "maintenance_id", nullable = false)
-    private Integer maintenanceId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "maintenance_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "maintenance_id")
     private Maintenance maintenance; // This field is not included in the database but allows for relationship access
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+    
     @Column(nullable = false)
     private Integer quantity;
 
     @Column(nullable = false)
     private String description;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
 
     public Integer getId() {
         return id;
@@ -32,15 +29,7 @@ public class MaintenanceDetail {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    public Integer getMaintenanceId() {
-        return maintenanceId;
-    }
-
-    public void setMaintenanceId(Integer maintenanceId) {
-        this.maintenanceId = maintenanceId;
-    }
-
+    
     public Maintenance getMaintenance() {
         return maintenance;
     }
@@ -64,5 +53,12 @@ public class MaintenanceDetail {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 }

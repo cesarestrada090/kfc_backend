@@ -45,12 +45,12 @@ public class Product {
     @Column(name = "dimensions", length = 100)
     private String dimensions;
 
-    @Size(max = 20)
-    @Column(name = "serial_number", length = 17)
+    @Size(max = 120)
+    @Column(name = "serial_number", length = 117)
     private String serialNumber;
 
-    @Size(max = 15)
-    @Column(name = "bar_code", length = 13)
+    @Size(max = 115)
+    @Column(name = "bar_code", length = 113)
     private String barCode;
 
     @Column(name = "expiration_time")

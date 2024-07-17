@@ -59,7 +59,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         maintenance.setCreatedAt(LocalDateTime.now());
         maintenance.setLastUpdatedBy(user);
         maintenance.setCreatedBy(user);
-        List<MaintenanceDetail> maintenanceDetails = new ArrayList<>();
+        maintenance = maintenanceRepository.save(maintenance);
         for (int i = 0 ; i < dto.getMaintenanceDetails().size(); i++ ){
             MaintenanceDetailDto detailDto = dto.getMaintenanceDetails().get(i);
             MaintenanceDetail maintenanceDetail = new MaintenanceDetail();
@@ -67,13 +67,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             maintenanceDetail.setDescription(detailDto.getDescription());
             // Product
             Product product = productService.getProductEntityById(detailDto.getProductId());
-            //maintenanceDetail.setProduct(product);
+            maintenanceDetail.setProduct(product);
             maintenanceDetail.setMaintenance(maintenance);
-            maintenanceDetails.add(maintenanceDetail);
+            maintenanceDetailRepository.save(maintenanceDetail);
         }
-        if (!maintenanceDetails.isEmpty()){
-            maintenanceDetailRepository.saveAll(maintenanceDetails);
-        }
+     
         return MapperUtil.map(maintenance, MaintenanceDto.class);
     }
     

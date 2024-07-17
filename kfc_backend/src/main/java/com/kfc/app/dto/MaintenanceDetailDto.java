@@ -49,4 +49,7 @@ public class MaintenanceDetailDto {
     public void setProductId(Integer productId) {
         this.productId = productId;
     }
+
+    public MaintenanceDetailDto() {
+    }
 }
