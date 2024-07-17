@@ -50,9 +50,9 @@ public class ProductController extends AbstractController {
     }
 
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody ProductDto brandDto){
-        brandDto = productService.update(id, brandDto);
-        return new ResponseEntity<>(brandDto, HttpStatus.OK);
+    public ResponseEntity<ProductDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody ProductDto productDto){
+        productDto = productService.update(id, productDto);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
     @GetMapping()

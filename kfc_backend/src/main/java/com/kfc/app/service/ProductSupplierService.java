@@ -16,8 +16,6 @@ public interface ProductSupplierService {
     ResultPageWrapper<ProductSupplierDto> findAllProductsBySupplierId(Integer orgId, Integer supplierId, Pageable paging);
 
     ProductSupplier getProductSupplier (ProductSupplierDto productSupplierDto);
-//
-//    ProductSupplier getProductEntityById(Integer id);
-//
-//    ProductSupplierDto update(Integer id, ProductSupplierDto dto);
+
+    ProductSupplierDto update(Integer id, ProductSupplierDto dto);
 }

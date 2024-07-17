@@ -103,7 +103,7 @@ public class ProductSupplierDto implements Serializable {
         this.paymentConditions = paymentConditions;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 

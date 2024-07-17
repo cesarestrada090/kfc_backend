@@ -66,6 +66,32 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     }
 
     @Override
+    @Transactional
+    public ProductSupplierDto update(Integer id, ProductSupplierDto productSupplierDto){
+        Optional<ProductSupplier> productSupplierOpt = productSupplierRepository.findById(id);
+        if (productSupplierOpt.isEmpty()) {
+            throw new NotFoundException("Product not found with id: " + id);
+        }
+        ProductSupplier productSupplier = productSupplierOpt.get();
+        User user = userService.getUserEntityById(productSupplierDto.getCreatedBy().getId());
+        Supplier supplier = supplierService.getSupplierEntityById(productSupplierDto.getSupplier().getId());
+        Organization organization = orgService.getOrgEntityById(productSupplierDto.getOrganization().getId());
+        Product product = productService.getProductEntityById(productSupplierDto.getProduct().getId());
+        productSupplier.setSupplier(supplier);
+        productSupplier.setOrganization(organization);
+        productSupplier.setProduct(product);
+        productSupplier.setCost(productSupplierDto.getCost());
+        productSupplier.setDiscount(productSupplierDto.getDiscount());
+        productSupplier.setDeliveryTime(productSupplierDto.getDeliveryTime());
+        productSupplier.setPaymentConditions(productSupplierDto.getPaymentConditions());
+        productSupplier.setStatus(productSupplierDto.getStatus());
+        productSupplier.setUpdatedAt(LocalDateTime.now());
+        productSupplier.setUpdatedBy(user);
+        productSupplier = productSupplierRepository.save(productSupplier);
+        return MapperUtil.map(productSupplier, ProductSupplierDto.class);
+    }
+
+    @Override
     public ProductSupplier getProductSupplier(ProductSupplierDto productSupplierDto) {
         Optional<ProductSupplier> productSupplier =
                 productSupplierRepository.findBySupplierIdAndProductIdAndOrganizationId(productSupplierDto.getSupplier().getId(),

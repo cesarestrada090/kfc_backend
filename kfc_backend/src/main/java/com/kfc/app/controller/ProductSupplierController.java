@@ -61,6 +61,12 @@ public class ProductSupplierController extends AbstractController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProductSupplierDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody ProductSupplierDto productSupplierDto){
+        productSupplierDto = productSupplierService.update(id, productSupplierDto);
+        return new ResponseEntity<>(productSupplierDto, HttpStatus.OK);
+    }
+
     @Override
     public String getResource () {
         return "product_suppliers";
