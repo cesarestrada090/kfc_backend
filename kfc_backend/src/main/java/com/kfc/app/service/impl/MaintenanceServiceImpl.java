@@ -119,6 +119,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             maintenanceDetailDto.setQuantity(maintenanceDetail.getQuantity());
             maintenanceDetailDto.setDescription(maintenanceDetail.getDescription());
             maintenanceDetailDto.setProductId(maintenanceDetail.getProduct().getId());
+            maintenanceDetailDto.setMaintenanceId(maintenanceDetail.getMaintenance().getId());
+            maintenanceDetailDto.setId(maintenanceDetail.getId());
             maintenanceDetailDtos.add(maintenanceDetailDto);
         }
         return maintenanceDetailDtos;
