@@ -7,7 +7,6 @@ import com.kfc.app.repository.MaintenanceDetailRepository;
 import com.kfc.app.repository.MaintenanceRepository;
 import com.kfc.app.service.*;
 import com.kfc.app.util.MapperUtil;
-import com.kfc.app.util.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -97,7 +96,32 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     public ResultPageWrapper<MaintenanceDto> findByOrganizationId(Integer orgId, Pageable paging) {
         Page<Maintenance> maintenances = maintenanceRepository.findMaintenanceByOrganizationId(orgId, paging);
-        return PaginationUtil.prepareResultWrapper(maintenances, MaintenanceDto.class);
+        List<MaintenanceDto> maintenanceDtoList = new ArrayList<>();
+        for(Maintenance maintenance : maintenances){
+            MaintenanceDto maintenanceDto = MapperUtil.map(maintenance, MaintenanceDto.class);
+            List<MaintenanceDetail> maintenanceDetails = maintenanceDetailRepository.findByMaintenanceId(maintenance.getId());
+            List<MaintenanceDetailDto> maintenanceDetailDtoList = getMaintenanceDetailDtoList(maintenanceDetails);
+            maintenanceDto.setMaintenanceDetails(maintenanceDetailDtoList);
+            maintenanceDtoList.add(maintenanceDto);
+        }
+        ResultPageWrapper<MaintenanceDto> resultPageWrapper = new ResultPageWrapper<>();
+        resultPageWrapper.setTotalPages(maintenances.getTotalPages());
+        resultPageWrapper.setTotalItems(maintenances.getTotalElements());
+        resultPageWrapper.setCurrentPage(maintenances.getNumber());
+        resultPageWrapper.setPagesResult(maintenanceDtoList);
+        return resultPageWrapper;
+    }
+
+    private static List<MaintenanceDetailDto> getMaintenanceDetailDtoList(List<MaintenanceDetail> maintenanceDetails) {
+        List<MaintenanceDetailDto> maintenanceDetailDtos = new ArrayList<>();
+        for(MaintenanceDetail maintenanceDetail : maintenanceDetails){
+            MaintenanceDetailDto maintenanceDetailDto = new MaintenanceDetailDto();
+            maintenanceDetailDto.setQuantity(maintenanceDetail.getQuantity());
+            maintenanceDetailDto.setDescription(maintenanceDetail.getDescription());
+            maintenanceDetailDto.setProductId(maintenanceDetail.getProduct().getId());
+            maintenanceDetailDtos.add(maintenanceDetailDto);
+        }
+        return maintenanceDetailDtos;
     }
 
     @Override

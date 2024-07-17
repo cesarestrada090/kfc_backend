@@ -5,6 +5,8 @@ import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.dto.MaintenanceDto;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface MaintenanceService {
     MaintenanceDto save(MaintenanceDto dto);
     MaintenanceDto update(Integer id, MaintenanceDto dto);
