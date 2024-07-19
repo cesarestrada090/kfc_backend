@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RequestMapping("v1/app/product_supplier")
@@ -51,14 +52,10 @@ public class ProductSupplierController extends AbstractController {
     }
 
     @GetMapping(value="/organization/{organizationId}/{supplierId}")
-    public ResponseEntity<Map<String,Object>> getAllProductsBySupplierId(@PathVariable(value = "organizationId") int organizationId,
-                                                                         @PathVariable(value = "supplierId") int supplierId,
-                                                            @RequestParam(defaultValue = "1") int page,
-                                                            @RequestParam(defaultValue = "20") int size){
-        Pageable paging = PageRequest.of(page-1, size);
-        ResultPageWrapper<ProductSupplierDto> resultPageWrapper = productSupplierService.findAllProductsBySupplierId(organizationId, supplierId, paging);
-        Map<String, Object> response = prepareResponse(resultPageWrapper);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<List<ProductSupplierDto>> getAllProductsBySupplierId(@PathVariable(value = "organizationId") int organizationId,
+                                                                         @PathVariable(value = "supplierId") int supplierId){
+        List<ProductSupplierDto> productSupplierDto = productSupplierService.findAllProductsBySupplierId(organizationId, supplierId);
+        return new ResponseEntity<>(productSupplierDto, HttpStatus.OK);
     }
 
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

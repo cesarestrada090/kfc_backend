@@ -1,7 +1,6 @@
 package com.kfc.app.repository;
 
 import com.kfc.app.dto.ProductSupplierDto;
-import com.kfc.app.entities.Product;
 import com.kfc.app.entities.ProductSupplier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.List;
 
 public interface ProductSupplierRepository extends JpaRepository<ProductSupplier, Integer> {
 
@@ -20,11 +20,10 @@ public interface ProductSupplierRepository extends JpaRepository<ProductSupplier
 //                                                               @Param("productId")Integer productId,
 //                                                               @Param("organizationId")Integer organizationId);
 
-    Optional<ProductSupplier> findBySupplierIdAndProductIdAndOrganizationId (@Param("supplierId")Integer supplierId,
-                                                                         @Param("productId")Integer productId,
-                                                                         @Param("organizationId")Integer organizationId);
+    Optional<ProductSupplier> findBySupplierIdAndProductIdAndOrganizationId (Integer supplierId, Integer productId, Integer organizationId);
+
     Page<ProductSupplier> findByOrganizationId(@Param("orgId")Integer orgId, Pageable paging);
 
-    Page<ProductSupplier> findByOrganizationIdAndSupplierId (@Param("orgId")Integer orgId, @Param("supplierId")Integer supplierId, Pageable paging);
+    Optional<List<ProductSupplier>> findByOrganizationIdAndSupplierId (Integer organizationId, Integer supplierId);
 
 }

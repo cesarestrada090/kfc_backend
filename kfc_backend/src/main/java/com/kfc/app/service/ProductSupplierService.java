@@ -5,6 +5,8 @@ import com.kfc.app.dto.ResultPageWrapper;
 import com.kfc.app.entities.ProductSupplier;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface ProductSupplierService {
 
     ProductSupplierDto save(ProductSupplierDto productSupplierDto);
@@ -13,9 +15,9 @@ public interface ProductSupplierService {
 
     ResultPageWrapper<ProductSupplierDto> findByOrganizationId(Integer orgId, Pageable paging);
 
-    ResultPageWrapper<ProductSupplierDto> findAllProductsBySupplierId(Integer orgId, Integer supplierId, Pageable paging);
+    List<ProductSupplierDto> findAllProductsBySupplierId(Integer orgId, Integer supplierId);
 
-    ProductSupplier getProductSupplier (ProductSupplierDto productSupplierDto);
+    ProductSupplier getProductSupplier (Integer supplierId, Integer productId, Integer orgId);
 
     ProductSupplierDto update(Integer id, ProductSupplierDto dto);
 }

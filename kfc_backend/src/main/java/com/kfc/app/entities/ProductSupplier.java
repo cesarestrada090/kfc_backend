@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
@@ -22,15 +23,15 @@ public class ProductSupplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name =  "product_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name =  "product_id", nullable = false)
     private Product product;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name =  "supplier_id")
     private Supplier supplier;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name =  "organization_id")
     private Organization organization;
 
@@ -42,6 +43,9 @@ public class ProductSupplier {
 
     @Column(name = "delivery_time")
     private Integer deliveryTime;
+
+    @Column(name = "min_limit_quantity")
+    private Integer minLimitQuantity;
 
     @Size(max = 645)
     @Column(name = "payment_conditions", length = 465)
@@ -119,6 +123,14 @@ public class ProductSupplier {
 
     public void setDeliveryTime(Integer deliveryTime) {
         this.deliveryTime = deliveryTime;
+    }
+
+    public Integer getMinLimitQuantity() {
+        return minLimitQuantity;
+    }
+
+    public void setMinLimitQuantity(Integer minLimitQuantity) {
+        this.minLimitQuantity = minLimitQuantity;
     }
 
     public String getPaymentConditions() {

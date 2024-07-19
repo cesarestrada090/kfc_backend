@@ -195,6 +195,7 @@ CREATE TABLE product_supplier (
   cost DECIMAL,
   discount DECIMAL,
   delivery_time INT,
+  min_limit_quantity INT,
   payment_conditions VARCHAR(255),
   status BOOLEAN NOT NULL DEFAULT true,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

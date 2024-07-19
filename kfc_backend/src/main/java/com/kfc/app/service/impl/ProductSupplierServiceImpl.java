@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,22 +48,25 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     @Override
     @Transactional
     public ProductSupplierDto save(ProductSupplierDto productSupplierDto) {
-        User user = userService.getUserEntityById(productSupplierDto.getCreatedBy().getId());
         Organization organization = orgService.getOrgEntityById(productSupplierDto.getOrganization().getId());
+        User user = userService.getUserEntityById(productSupplierDto.getCreatedBy().getId());
         Supplier supplier = supplierService.getSupplierEntityById(productSupplierDto.getSupplier().getId());
-        Product product = productService.getProductEntityById(productSupplierDto.getProduct().getId());
-        if (this.getProductSupplier(productSupplierDto) != null) {
-            throw new DuplicatedException("Information duplicated for " + organization.getName());
-        }
         ProductSupplier productSupplier = MapperUtil.map(productSupplierDto, ProductSupplier.class);
+        productSupplier.setStatus(true);
         productSupplier.setOrganization(organization);
         productSupplier.setSupplier(supplier);
-        productSupplier.setProduct(product);
         productSupplier.setCreatedAt(LocalDateTime.now());
         productSupplier.setUpdatedAt(LocalDateTime.now());
         productSupplier.setCreatedBy(user);
         productSupplier.setUpdatedBy(user);
-        productSupplier = productSupplierRepository.save(productSupplier);
+        for (ProductDto prod: productSupplierDto.getProduct()) {
+            if (getProductSupplier(productSupplierDto.getSupplier().getId(), prod.getId(),
+                    productSupplierDto.getOrganization().getId()) == null) {
+                Product product = productService.getProductEntityById(prod.getId());
+                productSupplier.setProduct(product);
+                productSupplier = productSupplierRepository.save(productSupplier);
+            }
+        }
         return MapperUtil.map(productSupplier, ProductSupplierDto.class);
     }
 
@@ -76,10 +81,10 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         User user = userService.getUserEntityById(productSupplierDto.getCreatedBy().getId());
         Supplier supplier = supplierService.getSupplierEntityById(productSupplierDto.getSupplier().getId());
         Organization organization = orgService.getOrgEntityById(productSupplierDto.getOrganization().getId());
-        Product product = productService.getProductEntityById(productSupplierDto.getProduct().getId());
+//        Product product = productService.getProductEntityById(productSupplierDto.getProduct().getId());
         productSupplier.setSupplier(supplier);
         productSupplier.setOrganization(organization);
-        productSupplier.setProduct(product);
+//        productSupplier.setProduct(product);
         productSupplier.setCost(productSupplierDto.getCost());
         productSupplier.setDiscount(productSupplierDto.getDiscount());
         productSupplier.setDeliveryTime(productSupplierDto.getDeliveryTime());
@@ -92,11 +97,9 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     }
 
     @Override
-    public ProductSupplier getProductSupplier(ProductSupplierDto productSupplierDto) {
+    public ProductSupplier getProductSupplier(Integer supplierId, Integer productId, Integer orgId) {
         Optional<ProductSupplier> productSupplier =
-                productSupplierRepository.findBySupplierIdAndProductIdAndOrganizationId(productSupplierDto.getSupplier().getId(),
-                        productSupplierDto.getProduct().getId(),
-                        productSupplierDto.getOrganization().getId());
+                productSupplierRepository.findBySupplierIdAndProductIdAndOrganizationId(supplierId, productId, orgId);
 
         return (productSupplier.isPresent()) ? productSupplier.get() : null;
     }
@@ -120,12 +123,12 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     }
 
     @Override
-    public ResultPageWrapper<ProductSupplierDto> findAllProductsBySupplierId(Integer orgId, Integer supplierId, Pageable paging) {
-        Page<ProductSupplier> productSuppliers = productSupplierRepository.findByOrganizationIdAndSupplierId(orgId, supplierId, paging);
-        if(productSuppliers.isEmpty()){
-            throw new NotFoundException("There are not products for this organization.");
-        }
-        return PaginationUtil.prepareResultWrapper(productSuppliers, ProductSupplierDto.class);
+    public List<ProductSupplierDto> findAllProductsBySupplierId(Integer orgId, Integer supplierId) {
+        Optional<List<ProductSupplier>> productSuppliers = productSupplierRepository.findByOrganizationIdAndSupplierId(orgId, supplierId);
+//        if(productSuppliers.isEmpty()){
+//            throw new NotFoundException("There are not products for this organization.");
+//        }
+        return MapperUtil.mapAll(productSuppliers.get(), ProductSupplierDto.class);
     }
 
 }

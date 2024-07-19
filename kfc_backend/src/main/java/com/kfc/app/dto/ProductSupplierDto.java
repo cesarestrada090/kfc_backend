@@ -5,16 +5,18 @@ import com.kfc.app.entities.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ProductSupplierDto implements Serializable {
 
     private Integer id;
-    private ProductDto product;
+    private List<ProductDto> product;
     private SupplierDto supplier;
     private OrganizationDto organization;
     private Double cost;
     private Double discount;
     private Integer deliveryTime;
+    private Integer minLimitQuantity;
     private String paymentConditions;
     private boolean status;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -32,6 +34,7 @@ public class ProductSupplierDto implements Serializable {
         this.cost = productSupplier.getCost();
         this.discount = productSupplier.getDiscount();
         this.deliveryTime = productSupplier.getDeliveryTime();
+        this.minLimitQuantity = productSupplier.getMinLimitQuantity();
         this.paymentConditions = productSupplier.getPaymentConditions();
         this.status = productSupplier.getStatus();
         this.createdAt = productSupplier.getCreatedAt();
@@ -47,11 +50,11 @@ public class ProductSupplierDto implements Serializable {
         this.id = id;
     }
 
-    public ProductDto getProduct() {
+    public List<ProductDto> getProduct() {
         return product;
     }
 
-    public void setProduct(ProductDto product) {
+    public void setProduct(List<ProductDto> product) {
         this.product = product;
     }
 
@@ -93,6 +96,14 @@ public class ProductSupplierDto implements Serializable {
 
     public void setDeliveryTime(Integer deliveryTime) {
         this.deliveryTime = deliveryTime;
+    }
+
+    public Integer getMinLimitQuantity() {
+        return minLimitQuantity;
+    }
+
+    public void setMinLimitQuantity(Integer minLimitQuantity) {
+        this.minLimitQuantity = minLimitQuantity;
     }
 
     public String getPaymentConditions() {
